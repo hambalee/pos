@@ -14,6 +14,11 @@ const routes = [
     component: Stock
   },
   {
+    path: '/stock',
+    name: 'stock',
+    component: Stock
+  },
+  {
     path: '/shop',
     name: 'shop',
     component: Shop

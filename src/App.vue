@@ -37,21 +37,25 @@
       </v-btn>
     </v-app-bar> -->
 
-    
-      <router-view />
+    <Drawer />
+    <Views />
   </v-app>
 </template>
 
 <script>
+import Drawer from "@/components/core/Drawer";
+import Views from "@/components/core/Views";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
+    Drawer,
+    Views
   },
 
   data: () => ({
     //
-  }),
+  })
 };
 </script>

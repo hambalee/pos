@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <div id="core-view">
+    <div id="core-views">
       <v-fade-transition mode="out-in">
         <router-view />
       </v-fade-transition>
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "View",
+  name: "Views",
   
 };
 </script>
