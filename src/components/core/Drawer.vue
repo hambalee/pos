@@ -1,11 +1,7 @@
 <template>
   <div id="drawer">
-    <v-toolbar clipped-left class="hidden-lg-and-up">
-      <v-btn
-        text
-        @click.stop="drawer = !drawer"
-        class="hidden-lg-and-up"
-      >
+    <v-app-bar clipped-left class="hidden-lg-and-up">
+      <v-btn text @click.stop="drawer = !drawer" class="hidden-lg-and-up">
         <i class="material-icons">menu</i>
       </v-btn>
       <!--       <v-toolbar-title>Title</v-toolbar-title>
@@ -15,7 +11,7 @@
         <v-btn flat>Link Two</v-btn>
         <v-btn flat>Link Three</v-btn>
       </v-toolbar-items> -->
-    </v-toolbar>
+    </v-app-bar>
 
     <v-navigation-drawer
       v-model="drawer"
@@ -26,12 +22,15 @@
       dark
       src="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
     >
-      <v-list>
+    <v-list rounded>
+      
+      <v-list-item-group mandatory color="white">
         <v-list-item
           v-for="([icon, text, url], i) in items"
           :key="i"
           link
-          @click="$router.push('/' + url)"
+          @click="onClickMenu(url)"
+          shaped
         >
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
@@ -41,7 +40,8 @@
             <v-list-item-title>{{ text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list>
+      </v-list-item-group>
+    </v-list>
     </v-navigation-drawer>
   </div>
 </template>
@@ -52,12 +52,17 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      ["view_comfortable", "Stock", "stock"],
-      ["shopping_cart", "Shop", "shop"],
-      ["show_chart", "Report", "report"],
-      ["history", "Transaction", "transaction"]
+      ["view_comfortable", "Stock", "/stock"],
+      ["shopping_cart", "Shop", "/shop"],
+      ["show_chart", "Report", "/report"],
+      ["history", "Transaction", "/transaction"]
     ]
-  })
+  }),
+  methods: {
+    onClickMenu(url) {
+      this.$router.push(url).catch(err => err)
+    }
+  }
 };
 </script>
 

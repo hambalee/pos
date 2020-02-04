@@ -13,8 +13,16 @@
               sm="6"
               v-for="(product, index) in products"
               :key="index"
+              @click="onClickProduct(product.name, product.price, product.qty)"
             >
-              <v-card class="mx-auto" max-width="100%" min-width="100%" max-height="100%" min-height="150" outlined>
+              <v-card
+                class="mx-auto"
+                max-width="100%"
+                min-width="100%"
+                max-height="100%"
+                min-height="150"
+                outlined
+              >
                 <v-card-title>{{ product.name }}</v-card-title>
                 <v-card-subtitle>{{ product.price }} บาท</v-card-subtitle>
               </v-card>
@@ -23,36 +31,27 @@
         </v-col>
         <v-col cols="12" md="4" align="center" justify="center" v-if="true">
           <v-card outlined>
-              <div>
-                <b> รวม 560 บาท</b>
-               
-              </div><br>
+            <div>
+              <b> รวม 560 บาท</b>
+            </div>
+            <br />
             <v-card-actions>
               <v-btn color="success" block>ชำระเงิน</v-btn>
             </v-card-actions>
-            <v-card outlined>
-              <v-card outlined>
-                <v-row>
-                  <v-col cols="12">
-                    <div>ค้อน</div>
-                    <v-spacer></v-spacer>
-                    <div>x 1</div>
-                    <v-spacer></v-spacer>
-                    <v-btn color="info">เพิ่ม</v-btn>
-                    <v-btn color="error">ลบ</v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-              <v-card outlined>
-                <v-row>
-                  <v-col cols="12">
-                    <span>สีทาอาคาร</span><v-spacer></v-spacer><span>x 2</span>
-                    <v-spacer></v-spacer>
-                    <v-btn color="info">เพิ่ม</v-btn>
-                    <v-btn color="error">ลบ</v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
+
+            <v-card outlined v-for="(item, index) in cart" :key="index">
+              <v-row>
+                <v-col cols="12">
+                  <div>
+                    {{ item.name }}
+                  </div>
+                  <v-spacer></v-spacer>
+                  <div>x {{ item.qty }}</div>
+                  <v-spacer></v-spacer>
+                  <v-btn color="info">+</v-btn>
+                  <v-btn color="error">-</v-btn>
+                </v-col>
+              </v-row>
             </v-card>
           </v-card>
         </v-col>
@@ -107,7 +106,15 @@ export default {
   created() {
     this.initialize();
   },
+  data() {
+    return {
+      cart: []
+    };
+  },
   methods: {
+    onClickProduct(name, price, qty = 1 ) {
+      this.cart.push({ name, price, qty });
+    },
     initialize() {
       this.products = [
         {
