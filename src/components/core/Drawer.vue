@@ -20,9 +20,9 @@
       app
       absolute
       dark
-      src="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
+      color="info"
     >
-    <v-img :aspect-ratio="1/1" src="">
+      <v-img :aspect-ratio="1 / 1" src="">
         <v-row align="end" class="lightbox white--text pa-2 fill-height">
           <v-col>
             <!-- <div class="subheading">ระบบจัดการร้านวัสดุก่อสร้าง</div> -->
@@ -64,6 +64,7 @@ export default {
       ["shopping_cart", "หน้าร้าน", "/shop"],
       ["show_chart", "รายงาน", "/report"],
       // ["history", "ประวัติ", "/transaction"]
+      ["business", "ผู้ผลิต", "/supplier"]
     ]
   }),
   methods: {

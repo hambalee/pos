@@ -13,7 +13,6 @@
       </label>
     </v-form>
     <v-label
-      v-model="value"
       v-for="product in products"
       :key="product"
       no-action
@@ -21,13 +20,13 @@
       {{ product.name }}
     </v-label>
     <v-file-input multiple label="File input" v-model="files"></v-file-input>
-    <v-btn color="success" @click="uploadBtn">text</v-btn>
+    <v-btn color="success" @click="upload">text</v-btn>
   </div>
 </template>
 
 <script>
 import { productsCollection } from "../firebase";
-import { storage } from "../firebase";
+import { storageRef } from "../firebase";
 // import axios from "axios";
 
 export default {
@@ -47,20 +46,22 @@ export default {
     });
   },
   methods: {
-    uploadBtn() {
-      console.log(this.files);
-      console.log(this.files.name);
+    upload() {
+      // console.log(this.files);
+      // console.log(this.files[0].name);
       const fd = new FormData();
       fd.append("image", this.files[0], this.files[0].name);
+      // console.log(fd);
+
       /* axios.post(storage, fd)
       .then(res => {
         console.log(res);
-        
+
       }) */
-      storage.put(fd).then(function(snapshot) {
+      storageRef.ref(`${this.files[0].name}`).put(fd).then(function(snapshot) {
         console.log("Uploaded a blob or file!");
         console.log(snapshot);
-        
+
       });
     },
     addProduct() {

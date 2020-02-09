@@ -1,13 +1,17 @@
-import { initializeApp } from "firebase";
+import firebase from 'firebase'
+import 'firebase/firestore'
 
-const app = initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGE_SENDER_ID"
-});
+const config = {
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: ""
+}
 
-export const db = app.firestore();
+export const db = firebase.initializeApp(config).firestore()
 export const productsCollection = db.collection('products');
+export const storageRef = firebase.storage();
+export const categoriesCollection = db.collection('categories');
+export const suppliersCollection = db.collection('suppliers');

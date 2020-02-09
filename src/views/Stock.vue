@@ -3,18 +3,29 @@
     :headers="headers"
     :items="products"
     class="elevation-1"
+    :search="search"
+    loading="true"
   >
     <!-- sort-by="name" -->
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>คลังสินค้า</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
+        <!-- <v-spacer></v-spacer> -->
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialogAddProdcut" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-2" v-on="on"
-              >เพิ่มสินค้า</v-btn
-            >
+            <v-btn color="primary" dark class="mb-2" v-on="on">
+              <v-icon>add</v-icon>
+              เพิ่มสินค้า
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -53,6 +64,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-spacer></v-spacer>
       </v-toolbar>
     </template>
     <template v-slot:item.action="{ item }">
@@ -71,19 +83,23 @@
 
 <script>
 import { productsCollection } from "../firebase";
+// eslint-disable-next-line no-unused-vars
+import { categoriesCollection } from "../firebase";
 
 export default {
   data: () => ({
-    dialog: false,
+    search: "",
+    dialogAddProdcut: false,
     headers: [
       {
-        text: "สินค้า",
+        text: "ชื่อสินค้า",
         align: "left",
-        sortable: true,
-        value: "name"
+        sortable: false,
+        value: "productName"
       },
-      { text: "ราคา", value: "price" },
-      { text: "ปริมาณ", value: "quantity" },
+      { text: "ราคา", align: "right", value: "productPrice" },
+      { text: "ปริมาณ", align: "center", value: "quantityPerUnit" },
+      { text: "หมวดหมู่", value: "categoryName" },
       { text: "", value: "action", sortable: false }
     ],
     products: [],
@@ -94,8 +110,7 @@ export default {
       quantity: ""
     },
     defaultItem: {
-      name: "",
-      quantity: 0
+      name: ""
     }
   }),
 
@@ -106,7 +121,7 @@ export default {
   },
 
   watch: {
-    dialog(val) {
+    dialogAddProdcut(val) {
       val || this.close();
     }
   },
@@ -136,72 +151,36 @@ export default {
     },
     initialize() {
       productsCollection.get().then(querySnapshot => {
-        this.products2 = querySnapshot.docs.map(doc => doc.data());
+        this.products = querySnapshot.docs.map(doc => doc.data());
       });
-      this.products = [
-        {
-          name: "กระเบื้องคอนกรีต",
-          price: 100,
-          qty: 3
-        },
-        {
-          name: "ปูนซีเมนต์",
-          price: 210,
-          qty: 4
-        },
-        {
-          name: "ไม้อัด",
-          price: 150,
-          qty: 5
-        },
-        {
-          name: "ปลั๊กไฟ",
-          price: 50,
-          qty: 4
-        },
-        {
-          name: "หมวกนิรภัย",
-          price: 170,
-          qty: 7
-        },
-        {
-          name: "กระดาษทรายแผ่น",
-          price: 15,
-          qty: 9
-        },
-        {
-          name: "ค้อน",
-          price: 60,
-          qty: 14
-        },
-        {
-          name: "ประตูไม้อัด",
-          price: 208,
-          qty: 10
-        },
-        {
-          name: "สีทาอาคาร",
-          price: 250,
-          qty: 8
-        },
-        {
-          name: "กาวตะปู",
-          price: 55,
-          qty: 1
-        }
-      ];
-      // this.products.push = this.products2.map(item => item)
+      /*       this.products.forEach(product => {
+        console.log(product);
+        categoriesCollection
+          .doc(product.categoryID)
+          .get()
+          .then(querySnapshot => {
+            product.categoryName = querySnapshot.data().categoryName
+          });
+        
+      }); */
 
-/*       this.products2.map( item => {
-        this.products.push = item
-      }) */
+      /*       categoriesCollection
+        .doc(this.product.categoryID)
+        .get()
+        .then(doc => {
+          console.log(doc.data().categoryName);
+          product.categoryName = doc.data().categoryName;
+          return doc.data().categoryName;
+        });
+      console.log(JSON.stringify(product));
+      console.log(product.categoryID);
 
+      return product; */
     },
-
     editItem(item) {
       this.editedIndex = this.products.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+      this.dialogAddProdcut = true;
     },
 
     deleteItem(item) {
@@ -211,7 +190,7 @@ export default {
     },
 
     close() {
-      this.dialog = false;
+      this.dialogAddProdcut = false;
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
