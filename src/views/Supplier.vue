@@ -178,8 +178,6 @@ export default {
           let newdoc
           newdoc = doc.data()
           newdoc.supplierID = doc.id
-          console.log(newdoc);
-          
           return newdoc
         
         });

@@ -37,21 +37,32 @@
                 <v-row @keypress.enter="save">
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.name"
+                      v-model="editedItem.productName"
                       label="ชื่อสินค้า"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.price"
+                      v-model="editedItem.productPrice"
                       label="ราคา"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.quantity"
+                      v-model="editedItem.productQuantity"
                       label="ปริมาณ"
                     ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                      :items="categoryList"
+                      label="หมวดหมู่"
+                      item-text="categoryName"
+                      item-value="categoryID"
+                      v-model="defaultSelectedCategory"
+                      dense
+                      solo
+                    ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -83,11 +94,14 @@
 
 <script>
 import { productsCollection } from "../firebase";
-// eslint-disable-next-line no-unused-vars
 import { categoriesCollection } from "../firebase";
 
 export default {
   data: () => ({
+    defaultSelectedCategory: {
+      categoryID: "",
+      categoryName: ""
+    },
     search: "",
     dialogAddProdcut: false,
     headers: [
@@ -99,19 +113,30 @@ export default {
       },
       { text: "ราคา", align: "right", value: "productPrice" },
       { text: "ปริมาณ", align: "center", value: "quantityPerUnit" },
-      { text: "หมวดหมู่", value: "categoryName" },
+      { text: "หมวดหมู่", align: "center", value: "categoryName" },
       { text: "", value: "action", sortable: false }
     ],
     products: [],
     editedIndex: -1,
     editedItem: {
-      name: "",
-      price: "",
-      quantity: ""
+      productName: "",
+      productPrice: "",
+      quantityPerUnit: "",
+      categoryID: ""
+      /*       defaultSelectedCategory: {
+        categoryName: ""
+      } */
     },
     defaultItem: {
-      name: ""
-    }
+      productName: "",
+      productPrice: "",
+      quantityPerUnit: "",
+      categoryID: ""
+      /*       defaultSelectedCategory: {
+        categoryName: ""
+      } */
+    },
+    categoryList: []
   }),
 
   computed: {
@@ -134,9 +159,10 @@ export default {
     addProduct() {
       productsCollection
         .add({
-          name: this.editedItem.name,
-          price: this.editedItem.price,
-          quantity: this.editedItem.quantity,
+          productName: this.editedItem.productName,
+          productPrice: this.editedItem.productPrice,
+          quantityPerUnit: this.editedItem.quantityPerUnit,
+          categoryID: this.editedItem.categoryID,
           createdAt: new Date()
         })
         .then(function(docRef) {
@@ -148,34 +174,67 @@ export default {
       this.productName = "";
       this.productPrice = "";
       this.productQuantity = "";
+      this.categoryName = "";
+      this.defaultSelectedCategory.categoryID = "";
     },
     initialize() {
-      productsCollection.get().then(querySnapshot => {
-        this.products = querySnapshot.docs.map(doc => doc.data());
-      });
-      /*       this.products.forEach(product => {
-        console.log(product);
-        categoriesCollection
-          .doc(product.categoryID)
-          .get()
-          .then(querySnapshot => {
-            product.categoryName = querySnapshot.data().categoryName
-          });
-        
-      }); */
-
-      /*       categoriesCollection
-        .doc(this.product.categoryID)
-        .get()
-        .then(doc => {
-          console.log(doc.data().categoryName);
-          product.categoryName = doc.data().categoryName;
-          return doc.data().categoryName;
+      // category list for add new product
+      categoriesCollection.get().then(querySnapshot => {
+        this.categoryList = querySnapshot.docs.map(doc => {
+          let newCategoryList = doc.data();
+          newCategoryList.categoryID = doc.id;
+          return newCategoryList;
         });
-      console.log(JSON.stringify(product));
-      console.log(product.categoryID);
+      });
+      // test set category to product
+      /*       this.categoryList.forEach(cat => {
+        console.log(cat);
+      });
+      setTimeout(() => {
+        this.categoryList.forEach(cat => {
+          console.log(cat.categoryID + " " + cat.categoryName);
+        });
+      }, 3000); */
+      // product list
+      productsCollection.get().then(querySnapshot => {
+        this.products = querySnapshot.docs.map(doc => {
+          let newdoc;
+          newdoc = doc.data();
+          newdoc.productID = doc.id;
+          /*           categoriesCollection
+            .doc(newdoc.categoryID)
+            .get()
+            .then(querySnapshot => {
+              newdoc.categoryName = querySnapshot.data().categoryName;
+            }); */
+          // set category to each product
+          this.categoryList.forEach(cat => {
+            if (newdoc.categoryID == cat.categoryID) {
+              newdoc.categoryName = cat.categoryName;
+            }
+          });
+          return newdoc;
+        });
+      });
 
-      return product; */
+      /*  this.products.forEach(product => {
+        this.categoryList.forEach(category => {
+          if (product.categoryID == category.categoryID) {
+            product.categoryName = category.categoryName;
+          }
+        });
+      }); */
+      /*       for (let i = 0; i < this.products.length; i++) {
+        const element = this.products[i];
+        console.log(i + element);
+      }
+      setTimeout(function() {
+        
+        const clothing = ["shoes", "shirts", "socks", "sweaters"];
+        alert("Hello " + this.products.length);
+
+        console.log(clothing.length);
+      }, 3000); */
     },
     editItem(item) {
       this.editedIndex = this.products.indexOf(item);
@@ -185,8 +244,11 @@ export default {
 
     deleteItem(item) {
       const index = this.products.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
+      var result = confirm("Are you sure you want to delete this item?");
+      if (result) {
         this.products.splice(index, 1);
+        productsCollection.doc(item.productID).delete();
+      }
     },
 
     close() {
