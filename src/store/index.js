@@ -1,37 +1,38 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
+// import firebase from "firebase";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     isLogged: false,
     username: ""
-  },  
+  },
   getters: {
     isLogin(state) {
+
       return state.isLogged;
     }
   },
   mutations: {
-    SET_LOGGED_IN(state){
-      state.isLogged = true
+    SET_LOGGED_IN(state) {
+      state.isLogged = true;
     },
     SET_LOGGED_OUT(state) {
       state.isLogged = false;
     },
-    SET_USERNAME(state, value){
-      state.username = value
+    SET_USERNAME(state, value) {
+      state.username = value;
     }
   },
   actions: {
-    doLogin({commit}){
+    doLogin({ commit }) {
       commit("SET_LOGGED_IN");
     },
     doLogout({ commit }) {
       commit("SET_LOGGED_OUT");
-    },
+    }
   },
-  modules: {
-  }
-})
+  modules: {}
+});

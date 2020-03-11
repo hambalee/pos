@@ -5,8 +5,8 @@ import Shop from "../views/Shop.vue";
 import Report from "../views/Report.vue";
 import Transaction from "../views/Transaction.vue";
 import LoginPage from "../components/LoginPage.vue";
-// import store from '../store/index'
-import firebase from "firebase";
+import store from '../store/index'
+// import firebase from "firebase";
 
 Vue.use(VueRouter);
 
@@ -75,6 +75,16 @@ const routes = [
     }
   },
   {
+    path: "/customer",
+    name: "customer",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Customer.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "ลูกค้า"
+    }
+  },
+  {
     path: "/",
     redirect: "/login"
   },
@@ -106,8 +116,10 @@ router.beforeEach((to, from, next) => {
     next('/login')
   } */
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const isAuthenticated = firebase.auth().currentUser;
-  if (requiresAuth && !isAuthenticated) {
+  // const isAuthenticated = firebase.auth().currentUser;
+  // const isAuthenticated = store.getters.isLogin;
+
+  if (requiresAuth && !store.getters.isLogin) {
     next("/login");
   }
   next();

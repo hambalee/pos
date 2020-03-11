@@ -64,11 +64,11 @@
 import firebase from "firebase";
 export default {
   name: "LoginPage",
-  beforeCreate() {
-    var user = firebase.auth().currentUser;
-    if (user) {
-      this.$router.replace("/stock");
-    } 
+  mounted() {
+    // var user = firebase.auth().currentUser;
+/*     if (this.$store.getters.isLogin) {
+      this.$router.push("/stock");
+    }  */
   },
   data: function() {
     return { email: "", password: "", isShowPassword: false };

@@ -68,7 +68,7 @@ import firebase from "firebase";
 export default {
   name: "Drawer",
   mounted() {
-    this.setupFirebase();
+    // this.setupFirebase();
   },
   data: () => ({
     drawer: null,
