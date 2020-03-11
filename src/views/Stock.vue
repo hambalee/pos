@@ -120,7 +120,11 @@ export default {
       productPrice: "",
       quantityPerUnit: "",
       categoryID: "",
-      categoryName: ""
+      categoryName: "",
+/*       category: {
+        id: "",
+        name: ""
+      } */
       /*       defaultSelectedCategory: {
       } */
     },
@@ -129,7 +133,11 @@ export default {
       productPrice: "",
       quantityPerUnit: "",
       categoryID: "",
-      categoryName: ""
+      categoryName: "",
+/*       category: {
+        id: "",
+        name: ""
+      } */
       /*       defaultSelectedCategory: {
       categoryIDdefault: "",
       } */
@@ -163,14 +171,37 @@ export default {
       productsCollection
         .add({
           productName: this.editedItem.productName,
-          productPrice: this.editedItem.productPrice,
-          quantityPerUnit: this.editedItem.quantityPerUnit,
+          productPrice: parseFloat(this.editedItem.productPrice),
+          quantityPerUnit: parseFloat(this.editedItem.quantityPerUnit),
           categoryID: this.selectcategoryID,
-          createdAt: new Date()
+          createdAt: new Date(),
+          editedAt: new Date()
         })
         .then(function(docRef) {
           console.log("Document written with ID: ", docRef.id);
         })
+        .catch(function(error) {
+          console.error("Error adding document: ", error);
+        });
+      this.productName = "";
+      this.productPrice = "";
+      this.productQuantity = "";
+      this.categoryName = "";
+      this.selectcategoryID = "";
+    },
+    editProduct() {
+      productsCollection
+        .doc(this.editedItem.productID)
+        .update({
+          productName: this.editedItem.productName,
+          productPrice: parseFloat(this.editedItem.productPrice),
+          quantityPerUnit: parseFloat(this.editedItem.quantityPerUnit),
+          categoryID: this.selectcategoryID,
+          editedAt: new Date()
+        })
+/*         .then(function(docRef) {
+          console.log("Document written with ID: ", docRef.id);
+        }) */
         .catch(function(error) {
           console.error("Error adding document: ", error);
         });
@@ -265,6 +296,7 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.products[this.editedIndex], this.editedItem);
+        this.editProduct();
       } else {
         // console.log("before set = " + this.editItem.categoryName);
         /*         this.categoryList.forEach(cat => {

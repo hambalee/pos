@@ -126,14 +126,14 @@ export default {
       supplierPhone: "",
       supplierEmail: "",
       supplierAddress: "",
-      createdAt: "",
+      createdAt: ""
     },
     defaultItem: {
       supplierName: "",
       supplierPhone: "",
       supplierEmail: "",
       supplierAddress: "",
-      createdAt: "",
+      createdAt: ""
     }
   }),
 
@@ -161,7 +161,33 @@ export default {
           supplierPhone: this.editedItem.supplierPhone,
           supplierEmail: this.editedItem.supplierEmail,
           supplierAddress: this.editedItem.supplierAddress,
-          createdAt: new Date()
+          createdAt: new Date(),
+          editedAt: new Date()
+        })
+        // eslint-disable-next-line no-unused-vars
+        .then(function(docRef) {
+          //console.log("Document written with ID: ", docRef.id);
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch(function(error) {
+          //console.error("Error adding document: ", error);
+        });
+      this.supplierID = "";
+      this.supplierName = "";
+      this.supplierPhone = "";
+      this.supplierEmail = "";
+      this.supplierAddress = "";
+      this.createdAt = "";
+    },
+    editProduct() {
+      suppliersCollection
+        .doc(this.editedItem.supplierID)
+        .update({
+          supplierName: this.editedItem.supplierName,
+          supplierPhone: this.editedItem.supplierPhone,
+          supplierEmail: this.editedItem.supplierEmail,
+          supplierAddress: this.editedItem.supplierAddress,
+          editedAt: new Date()
         })
         // eslint-disable-next-line no-unused-vars
         .then(function(docRef) {
@@ -181,11 +207,10 @@ export default {
     initialize() {
       suppliersCollection.get().then(querySnapshot => {
         this.suppliers = querySnapshot.docs.map(doc => {
-          let newdoc
-          newdoc = doc.data()
-          newdoc.supplierID = doc.id
-          return newdoc
-        
+          let newdoc;
+          newdoc = doc.data();
+          newdoc.supplierID = doc.id;
+          return newdoc;
         });
       });
     },
@@ -197,19 +222,17 @@ export default {
 
     deleteItem(item) {
       const index = this.suppliers.indexOf(item);
-      var result = confirm("Are you sure you want to delete this item?")
-      if(result){
-        this.suppliers.splice(index, 1)
-        suppliersCollection.doc(item.supplierID).delete()
-/*         .get().then(querySnapshot => {
+      var result = confirm("Are you sure you want to delete this item?");
+      if (result) {
+        this.suppliers.splice(index, 1);
+        suppliersCollection.doc(item.supplierID).delete();
+        /*         .get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
             doc.ref.delete()
           });
         }) */
         //console.log("hhh");
       }
-        
-        
     },
 
     close() {
@@ -223,6 +246,7 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.suppliers[this.editedIndex], this.editedItem);
+        this.editProduct();
       } else {
         this.suppliers.push(this.editedItem);
         this.addProduct();

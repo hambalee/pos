@@ -1,17 +1,17 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="suppliers"
+    :items="customers"
     class="elevation-1"
     :search="search"
     loading="true"
-    :sort-by="['supplierName']"
+    :sort-by="['customerName']"
     :sort-desc="false"
   >
     <!-- sort-by="name" -->
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>ผู้ผลิต</v-toolbar-title>
+        <v-toolbar-title>ลูกค้า</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <!-- <v-spacer></v-spacer> -->
         <v-text-field
@@ -26,7 +26,7 @@
           <template v-slot:activator="{ on }">
             <v-btn color="primary" dark class="mb-2" v-on="on">
               <v-icon>add</v-icon>
-              เพิ่มผู้ผลิต
+              เพิ่มลูกค้า
             </v-btn>
           </template>
           <v-card>
@@ -39,25 +39,25 @@
                 <v-row @keypress.enter="save">
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.supplierName"
-                      label="ชื่อผู้ผลิต"
+                      v-model="editedItem.customerName"
+                      label="ชื่อลูกค้า"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.supplierPhone"
+                      v-model="editedItem.customerPhone"
                       label="เบอร์โทร"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.supplierEmail"
+                      v-model="editedItem.customerEmail"
                       label="อีเมล์"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.supplierAddress"
+                      v-model="editedItem.customerAddress"
                       label="ที่อยู่"
                     ></v-text-field>
                   </v-col>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { suppliersCollection } from "../firebase";
+import { customersCollection } from "../firebase";
 
 export default {
   data: () => ({
@@ -98,48 +98,48 @@ export default {
     dialogAddProdcut: false,
     headers: [
       {
-        text: "ชื่อผู้ผลิต",
-        value: "supplierName",
+        text: "ชื่อลูกค้า",
+        value: "customerName",
         sortable: false
       },
       {
         text: "เบอร์โทร",
-        value: "supplierPhone",
+        value: "customerPhone",
         sortable: false
       },
       {
         text: "อีเมล์",
-        value: "supplierEmail",
+        value: "customerEmail",
         sortable: false
       },
       {
         text: "ที่อยู่",
-        value: "supplierAddress",
+        value: "customerAddress",
         sortable: false
       },
       { text: "", value: "action", sortable: false }
     ],
-    suppliers: [],
+    customers: [],
     editedIndex: -1,
     editedItem: {
-      supplierName: "",
-      supplierPhone: "",
-      supplierEmail: "",
-      supplierAddress: "",
+      customerName: "",
+      customerPhone: "",
+      customerEmail: "",
+      customerAddress: "",
       createdAt: "",
     },
     defaultItem: {
-      supplierName: "",
-      supplierPhone: "",
-      supplierEmail: "",
-      supplierAddress: "",
+      customerName: "",
+      customerPhone: "",
+      customerEmail: "",
+      customerAddress: "",
       createdAt: "",
     }
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "เพิ่มผู้ผลิต" : "แก้ไข";
+      return this.editedIndex === -1 ? "เพิ่มลูกค้า" : "แก้ไข";
     }
   },
 
@@ -155,12 +155,12 @@ export default {
 
   methods: {
     addProduct() {
-      suppliersCollection
+      customersCollection
         .add({
-          supplierName: this.editedItem.supplierName,
-          supplierPhone: this.editedItem.supplierPhone,
-          supplierEmail: this.editedItem.supplierEmail,
-          supplierAddress: this.editedItem.supplierAddress,
+          customerName: this.editedItem.customerName,
+          customerPhone: this.editedItem.customerPhone,
+          customerEmail: this.editedItem.customerEmail,
+          customerAddress: this.editedItem.customerAddress,
           createdAt: new Date()
         })
         // eslint-disable-next-line no-unused-vars
@@ -171,36 +171,36 @@ export default {
         .catch(function(error) {
           //console.error("Error adding document: ", error);
         });
-      this.supplierID = "";
-      this.supplierName = "";
-      this.supplierPhone = "";
-      this.supplierEmail = "";
-      this.supplierAddress = "";
+      this.customerID = "";
+      this.customerName = "";
+      this.customerPhone = "";
+      this.customerEmail = "";
+      this.customerAddress = "";
       this.createdAt = "";
     },
     initialize() {
-      suppliersCollection.get().then(querySnapshot => {
-        this.suppliers = querySnapshot.docs.map(doc => {
+      customersCollection.get().then(querySnapshot => {
+        this.customers = querySnapshot.docs.map(doc => {
           let newdoc
           newdoc = doc.data()
-          newdoc.supplierID = doc.id
+          newdoc.customerID = doc.id
           return newdoc
         
         });
       });
     },
     editItem(item) {
-      this.editedIndex = this.suppliers.indexOf(item);
+      this.editedIndex = this.customers.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogAddProdcut = true;
     },
 
     deleteItem(item) {
-      const index = this.suppliers.indexOf(item);
+      const index = this.customers.indexOf(item);
       var result = confirm("Are you sure you want to delete this item?")
       if(result){
-        this.suppliers.splice(index, 1)
-        suppliersCollection.doc(item.supplierID).delete()
+        this.customers.splice(index, 1)
+        customersCollection.doc(item.customerID).delete()
 /*         .get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
             doc.ref.delete()
@@ -222,9 +222,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.suppliers[this.editedIndex], this.editedItem);
+        Object.assign(this.customers[this.editedIndex], this.editedItem);
       } else {
-        this.suppliers.push(this.editedItem);
+        this.customers.push(this.editedItem);
         this.addProduct();
       }
       this.close();
