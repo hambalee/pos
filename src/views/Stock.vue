@@ -49,7 +49,7 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.productQuantity"
+                      v-model="editedItem.quantityPerUnit"
                       label="ปริมาณ"
                     ></v-text-field>
                   </v-col>
@@ -59,7 +59,7 @@
                       label="หมวดหมู่"
                       item-text="categoryName"
                       item-value="categoryID"
-                      v-model="defaultSelectedCategory"
+                      v-model="selectcategoryID"
                       dense
                       solo
                     ></v-select>
@@ -98,10 +98,7 @@ import { categoriesCollection } from "../firebase";
 
 export default {
   data: () => ({
-    defaultSelectedCategory: {
-      categoryID: "",
-      categoryName: ""
-    },
+    selectcategoryID: "",
     search: "",
     dialogAddProdcut: false,
     headers: [
@@ -113,7 +110,7 @@ export default {
       },
       { text: "ราคา", align: "right", value: "productPrice" },
       { text: "ปริมาณ", align: "center", value: "quantityPerUnit" },
-      { text: "หมวดหมู่", align: "center", value: "categoryName" },
+      { text: "หมวดหมู่", align: "left", value: "categoryName" },
       { text: "", value: "action", sortable: false }
     ],
     products: [],
@@ -122,18 +119,19 @@ export default {
       productName: "",
       productPrice: "",
       quantityPerUnit: "",
-      categoryID: ""
+      categoryID: "",
+      categoryName: ""
       /*       defaultSelectedCategory: {
-        categoryName: ""
       } */
     },
     defaultItem: {
       productName: "",
       productPrice: "",
       quantityPerUnit: "",
-      categoryID: ""
+      categoryID: "",
+      categoryName: ""
       /*       defaultSelectedCategory: {
-        categoryName: ""
+      categoryIDdefault: "",
       } */
     },
     categoryList: []
@@ -157,12 +155,17 @@ export default {
 
   methods: {
     addProduct() {
+      console.log("this.categoryID " + this.selectcategoryID);
+      /*       console.log("this.defaultSelectedCategory  " + this.defaultSelectedCategory);
+      console.log("this.defaultSelectedCategory.categoryID  " + this.defaultSelectedCategory.categoryID);
+      console.log("this.defaultSelectedCategory.categoryname  " + this.defaultSelectedCategory.categoryname); */
+
       productsCollection
         .add({
           productName: this.editedItem.productName,
           productPrice: this.editedItem.productPrice,
           quantityPerUnit: this.editedItem.quantityPerUnit,
-          categoryID: this.editedItem.categoryID,
+          categoryID: this.selectcategoryID,
           createdAt: new Date()
         })
         .then(function(docRef) {
@@ -175,7 +178,7 @@ export default {
       this.productPrice = "";
       this.productQuantity = "";
       this.categoryName = "";
-      this.defaultSelectedCategory.categoryID = "";
+      this.selectcategoryID = "";
     },
     initialize() {
       // category list for add new product
@@ -229,7 +232,7 @@ export default {
         console.log(i + element);
       }
       setTimeout(function() {
-        
+
         const clothing = ["shoes", "shirts", "socks", "sweaters"];
         alert("Hello " + this.products.length);
 
@@ -263,7 +266,23 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.products[this.editedIndex], this.editedItem);
       } else {
+        // console.log("before set = " + this.editItem.categoryName);
+        /*         this.categoryList.forEach(cat => {
+          if (this.selectcategoryID == cat.categoryID) {
+            this.editItem.categoryName = cat.categoryName;
+            this.products.push(this.editedItem);
+          }
+        }); */
+/*         for (let cat of this.categoryList) {
+          if (this.selectcategoryID == cat.categoryID) {
+            this.editItem.categoryName = this.selectcategoryID;
+            console.log("after set = " + this.editItem.categoryName);
+            console.log("after set = " + this.editItem);
+            break;
+          }
+        } */
         this.products.push(this.editedItem);
+
         this.addProduct();
       }
       this.close();

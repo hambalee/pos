@@ -59,7 +59,7 @@ export default {
 
       }) */
       storageRef.ref(`${this.files[0].name}`).put(fd).then(function(snapshot) {
-        console.log("Uploaded a blob or file!");
+        //console.log("Uploaded a blob or file!");
         console.log(snapshot);
 
       });

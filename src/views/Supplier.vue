@@ -99,19 +99,23 @@ export default {
     headers: [
       {
         text: "ชื่อผู้ผลิต",
-        value: "supplierName"
+        value: "supplierName",
+        sortable: false
       },
       {
         text: "เบอร์โทร",
-        value: "supplierPhone"
+        value: "supplierPhone",
+        sortable: false
       },
       {
         text: "อีเมล์",
-        value: "supplierEmail"
+        value: "supplierEmail",
+        sortable: false
       },
       {
         text: "ที่อยู่",
-        value: "supplierAddress"
+        value: "supplierAddress",
+        sortable: false
       },
       { text: "", value: "action", sortable: false }
     ],
@@ -135,7 +139,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "เพิ่มสินค้า" : "แก้ไข";
+      return this.editedIndex === -1 ? "เพิ่มผู้ผลิต" : "แก้ไข";
     }
   },
 
@@ -159,11 +163,13 @@ export default {
           supplierAddress: this.editedItem.supplierAddress,
           createdAt: new Date()
         })
+        // eslint-disable-next-line no-unused-vars
         .then(function(docRef) {
-          console.log("Document written with ID: ", docRef.id);
+          //console.log("Document written with ID: ", docRef.id);
         })
+        // eslint-disable-next-line no-unused-vars
         .catch(function(error) {
-          console.error("Error adding document: ", error);
+          //console.error("Error adding document: ", error);
         });
       this.supplierID = "";
       this.supplierName = "";
@@ -200,7 +206,7 @@ export default {
             doc.ref.delete()
           });
         }) */
-        console.log("hhh");
+        //console.log("hhh");
       }
         
         

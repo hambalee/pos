@@ -1,7 +1,7 @@
 <template>
   <div id="shop">
-    <h1 class="subheading grey--text"></h1>
-    <v-container fluid>
+    <!--     <v-container fluid> -->
+    <!-- 
       <v-row>
         <v-col cols="12" md="8">
           <v-row>
@@ -13,18 +13,21 @@
               sm="6"
               v-for="(product, index) in products"
               :key="index"
-              @click="onClickProduct(product.name, product.price, product.qty)"
+              @click="
+                onClickProduct(
+                  product.productName,
+                  product.productPrice,
+                  product.qty
+                )
+              "
             >
-              <v-card
-                class="mx-auto"
-                max-width="100%"
-                min-width="100%"
-                max-height="100%"
-                min-height="150"
-                outlined
-              >
-                <v-card-title>{{ product.name }}</v-card-title>
-                <v-card-subtitle>{{ product.price }} บาท</v-card-subtitle>
+              <v-card outlined height="100%" width="100%">
+                <v-card-title>{{ product.productName }}</v-card-title>
+                
+                <v-divider class="mt-6 mx-4"></v-divider>
+                <v-card-subtitle>
+                  {{ product.productPrice }} บาท
+                </v-card-subtitle>
               </v-card>
             </v-col>
           </v-row>
@@ -42,21 +45,44 @@
             <v-card outlined v-for="(item, index) in cart" :key="index">
               <v-row>
                 <v-col cols="12">
-                  <div>
+                    <v-card-text >
                     {{ item.name }}
-                  </div>
-                  <v-spacer></v-spacer>
+                    </v-card-text>
+                  !--                   <v-spacer></v-spacer>
                   <div>x {{ item.qty }}</div>
                   <v-spacer></v-spacer>
                   <v-btn color="info">+</v-btn>
-                  <v-btn color="error">-</v-btn>
+                  <v-btn color="error">-</v-btn> --
+                  !-- <v-divider class="mt-6 mx-4"></v-divider> --
+                  <v-card-actions  class="card-action">
+                    <v-chip class="ma-2" color="green" text-color="white" @click="true" >
+                      <v-avatar left class="green darken-4">
+                        1
+                      </v-avatar>
+                      ชิ้น
+                    </v-chip>
+                    <v-chip
+                      v-if="true"
+                      class="ma-2"
+                      color="red"
+                      text-color="white"
+                      @click="true"
+                      >ลบ
+                    </v-chip>
+                    <v-chip @click="true">
+                      <v-icon left>mdi-blinds</v-icon>
+                      Close blinds
+                    </v-chip>
+                  </v-card-actions>
                 </v-col>
               </v-row>
             </v-card>
           </v-card>
         </v-col>
-      </v-row>
-    </v-container>
+      </v-row> 
+      -->
+
+    <!--     </v-container> -->
 
     <!--     <v-containter fluid>
       <v-row>
@@ -97,10 +123,64 @@
         </v-row>
       </v-container>
     </div> -->
+
+    <!-- card product list start -->
+<!--     <v-card class="mx-auto" max-width="200"  v-for="item in items" :key="item">
+      <v-img
+        class="white--text align-end"
+        height="150"
+        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+      >
+      </v-img>
+      <v-card-title class="w-5 text-truncate">{{ item.message }}</v-card-title>
+
+      <v-card-text>
+        <div >Whitehaven Beach</div>
+      </v-card-text>
+    </v-card> -->
+    <!-- card product list end -->
+    <v-row>
+    <v-col cols="12" sm="6" offset-sm="3" >
+      <v-card>
+        <v-container fluid>
+          <v-row>
+            <v-col
+              v-for="n in 10"
+              :key="n"
+              class="d-flex child-flex"
+              cols="4"
+            >
+              <v-card flat tile class="d-flex">
+                <v-img
+                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                  :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+                  aspect-ratio="1"
+                  class="grey lighten-2"
+                >
+                  <template v-slot:placeholder>
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-col>
+  </v-row>
   </div>
 </template>
 
 <script>
+import { productsCollection } from "../firebase";
+import { categoriesCollection } from "../firebase";
+
 export default {
   name: "Shop",
   created() {
@@ -108,69 +188,50 @@ export default {
   },
   data() {
     return {
-      cart: []
+      cart: [],
+      products: [],
+      items: [{ message: "Fooadsfasdfasdfasdfasdfasdfasdfsadf" }, { message: "Basadfsadfasdfasdfrasdfsdfasdfasdfasdfasdf" }]
     };
   },
   methods: {
-    onClickProduct(name, price, qty = 1 ) {
+    onClickProduct(name, price, qty = 1) {
       this.cart.push({ name, price, qty });
     },
     initialize() {
-      this.products = [
-        {
-          name: "กระเบื้องคอนกรีต",
-          price: 100,
-          qty: 3
-        },
-        {
-          name: "ปูนซีเมนต์",
-          price: 210,
-          qty: 4
-        },
-        {
-          name: "ไม้อัด",
-          price: 150,
-          qty: 5
-        },
-        {
-          name: "ปลั๊กไฟ",
-          price: 50,
-          qty: 4
-        },
-        {
-          name: "หมวกนิรภัย",
-          price: 170,
-          qty: 7
-        },
-        {
-          name: "กระดาษทรายแผ่น",
-          price: 15,
-          qty: 9
-        },
-        {
-          name: "ค้อน",
-          price: 60,
-          qty: 14
-        },
-        {
-          name: "ประตูไม้อัด",
-          price: 208,
-          qty: 10
-        },
-        {
-          name: "สีทาอาคาร",
-          price: 250,
-          qty: 8
-        },
-        {
-          name: "กาวตะปู",
-          price: 55,
-          qty: 1
-        }
-      ];
+      // category list for add new product
+      categoriesCollection.get().then(querySnapshot => {
+        this.categoryList = querySnapshot.docs.map(doc => {
+          let newCategoryList = doc.data();
+          newCategoryList.categoryID = doc.id;
+          return newCategoryList;
+        });
+      });
+      productsCollection.get().then(querySnapshot => {
+        this.products = querySnapshot.docs.map(doc => {
+          let newdoc;
+          newdoc = doc.data();
+          newdoc.productID = doc.id;
+
+          this.categoryList.forEach(cat => {
+            if (newdoc.categoryID == cat.categoryID) {
+              newdoc.categoryName = cat.categoryName;
+            }
+          });
+          return newdoc;
+        });
+      });
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+.card-outter {
+  position: relative;
+  padding-bottom: 50px;
+}
+.card-actions {
+  position: absolute;
+  bottom: 0;
+}
+</style>
