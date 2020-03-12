@@ -37,7 +37,7 @@
       </v-btn>
     </v-app-bar> -->
 
-    <Drawer />
+    <Drawer v-if="$store.state.isLogged" />
     <Views />
   </v-app>
 </template>
@@ -45,6 +45,7 @@
 <script>
 import Drawer from "@/components/core/Drawer";
 import Views from "@/components/core/Views";
+// import firebase from "firebase";
 
 export default {
   name: "App",
@@ -52,6 +53,30 @@ export default {
   components: {
     Drawer,
     Views
+  },
+
+  created() {
+    // this.$store.dispatch({ type: "restoreLogin" });
+    console.log("hello from app created");
+    // console.log(this.$store.getters.isLogin);
+
+//check login
+/*     firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("User is logined from app created");
+        // update data or vuex state
+        this.$store.dispatch("doLogin");
+      } else {
+        console.log("User is not logged in. from app created");
+      }
+    }); */
+    // console.log(firebase.auth().currentUser?"hello":"worl");
+  },
+  mounted() {
+    console.log("hello from app mouted");
+    // console.log("in app mouted",this.$store.getters.isLogin);
+    // console.log(firebase.auth().currentUser);
+    // this.$store.dispatch({ type: "restoreLogin" });
   },
 
   data: () => ({

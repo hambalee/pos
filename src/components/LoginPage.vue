@@ -67,7 +67,9 @@ export default {
   mounted() {
     // var user = firebase.auth().currentUser;
 /*     if (this.$store.getters.isLogin) {
-      this.$router.push("/stock");
+      console.log("logggggggedin");
+      
+      this.$router.replace("/stock");
     }  */
   },
   data: function() {
@@ -80,8 +82,8 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(
           () => {
-            this.$router.replace("/stock");
             this.$store.dispatch("doLogin");
+            this.$router.replace("/stock");
           },
           err => {
             alert(err.message);

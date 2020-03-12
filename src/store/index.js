@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-// import firebase from "firebase";
+import firebase from "firebase";
 
 Vue.use(Vuex);
 
@@ -11,7 +11,9 @@ export default new Vuex.Store({
   },
   getters: {
     isLogin(state) {
-
+/*       if(firebase.auth().currentUser){
+        state.isLogged = true;
+      } */
       return state.isLogged;
     }
   },
@@ -32,7 +34,12 @@ export default new Vuex.Store({
     },
     doLogout({ commit }) {
       commit("SET_LOGGED_OUT");
-    }
+    },
+    restoreLogin({ commit }) {
+      if (firebase.auth().currentUser) {
+        commit("SET_LOGGED_IN");
+      }
+    },
   },
   modules: {}
 });

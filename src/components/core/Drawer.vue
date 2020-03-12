@@ -1,5 +1,5 @@
 <template>
-  <div id="drawer"  v-if="this.$store.getters.isLogin">
+  <div id="drawer">
     <v-app-bar app dense flat dark hide-on-scroll color="primary" class="">
       <v-btn text @click.stop="drawer = !drawer" class="">
         <i class="material-icons">menu</i>
@@ -68,16 +68,28 @@ import firebase from "firebase";
 export default {
   name: "Drawer",
   mounted() {
-    // this.setupFirebase();
+ 
+    // this.$store.dispatch("doLogin");
+    console.log("hello from drawer mounted");
+    
+  },
+  created(){
+    console.log("hello from drawer created");
+/*    if(firebase.auth().currentUser){
+      this.loggedIn = true;
+
+    } */
   },
   data: () => ({
     drawer: null,
     items: [
       ["view_comfortable", "คลังสินค้า", "/stock"],
+      ["add_box", "นำเข้า", "/stock/import"],
       ["shopping_cart", "หน้าร้าน", "/shop"],
       ["show_chart", "รายงาน", "/report"],
-      // ["history", "ประวัติ", "/transaction"]
-      ["business", "ผู้ผลิต", "/supplier"]
+      //["history", "ประวัติ", "/transaction"],
+      //["customer", "ลูกค้า", "/customer"],
+      //["business", "ผู้ผลิต", "/supplier"],
     ],
     loggedIn: false
   }),
@@ -95,12 +107,13 @@ export default {
         });
     }
   },
-  setupFirebase() {
+/*   setupFirebase() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
         console.log("signed in");
         this.loggedIn = true;
+        this.$store.dispatch("doLogin");
       } else {
         // No user is signed in.
         this.loggedIn = false;
@@ -108,7 +121,7 @@ export default {
         this.$router.replace("/login");
       }
     });
-  }
+  } */
 };
 </script>
 

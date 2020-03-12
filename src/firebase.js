@@ -1,5 +1,4 @@
 import firebase from 'firebase'
-import 'firebase/firestore'
 
 const config = {
   apiKey: "",
@@ -10,8 +9,11 @@ const config = {
   messagingSenderId: ""
 }
 
-export const db = firebase.initializeApp(config).firestore()
+const firebaseInit = firebase.initializeApp(config)
+
+export const db = firebaseInit.firestore()
 export const productsCollection = db.collection('products');
 export const storageRef = firebase.storage();
 export const categoriesCollection = db.collection('categories');
 export const suppliersCollection = db.collection('suppliers');
+export const customersCollection = db.collection('customers');

@@ -5,8 +5,10 @@ import Shop from "../views/Shop.vue";
 import Report from "../views/Report.vue";
 import Transaction from "../views/Transaction.vue";
 import LoginPage from "../components/LoginPage.vue";
-import store from '../store/index'
-// import firebase from "firebase";
+// eslint-disable-next-line no-unused-vars
+import store from "../store/index";
+// eslint-disable-next-line no-unused-vars
+import firebase from "firebase";
 
 Vue.use(VueRouter);
 
@@ -68,7 +70,7 @@ const routes = [
     path: "/supplier",
     name: "supplier",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Supplier.vue"),
+      import(/* webpackChunkName: "supplier" */ "../views/Supplier.vue"),
     meta: {
       requiresAuth: true,
       title: "ผู้ผลิต"
@@ -78,20 +80,29 @@ const routes = [
     path: "/customer",
     name: "customer",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Customer.vue"),
+      import(/* webpackChunkName: "customer" */ "../views/Customer.vue"),
     meta: {
-      requiresAuth: true,
       title: "ลูกค้า"
     }
   },
   {
+    path: "/stock/import",
+    name: "import",
+    component: () =>
+      import(/* webpackChunkName: "import" */ "../views/Import.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "นำเข้า"
+    }
+  }
+  /*   {
     path: "/",
     redirect: "/login"
-  },
-  {
+  }, */
+  /*   {
     path: "*",
-    redirect: "/login"
-  }
+    redirect: "/about"
+  } */
 ];
 
 const router = new VueRouter({
@@ -102,6 +113,25 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title;
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      console.log("User is logined from router");
+      // update data or vuex state
+      store.dispatch("doLogin");
+      console.log("check state", store.getters.isLogin);
+    } else {
+      console.log("check state else", store.getters.isLogin);
+      console.log("User is not logged in. from router before each");
+/*       if (store.getters.isLogin && to.path === "/login") {
+        next("/stock");
+      } */
+      if (to.meta.requiresAuth && !store.getters.isLogin) {
+        next("/login");
+      }
+    }
+  });
+  next();
+
   /*   const requiresAuth = to.meta.requiresAuth
   if (requiresAuth && !this.$store.getters.isLogin) {
     next('/login')
@@ -115,14 +145,18 @@ router.beforeEach((to, from, next) => {
   /*   if(!store.getters.isLogin){
     next('/login')
   } */
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   // const isAuthenticated = firebase.auth().currentUser;
   // const isAuthenticated = store.getters.isLogin;
 
-  if (requiresAuth && !store.getters.isLogin) {
+  // eslint-disable-next-line no-unused-vars
+  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  // eslint-disable-next-line no-constant-condition
+  /*   if (store.getters.isLogin && to.name === "/login") {
+    next("/stock");
+  } */
+  /*   if (requiresAuth && !store.getters.isLogin) {
     next("/login");
-  }
-  next();
+  } */
 });
 
 export default router;
