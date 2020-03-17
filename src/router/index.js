@@ -88,6 +88,15 @@ const routes = [
     }
   },
   {
+    path: "/stock/details/:id",
+    name: "stock-view",
+    component: () =>
+      import(/* webpackChunkName: "customer" */ "../views/StockView.vue"),
+    meta: {
+      title: "รายละเอียด"
+    }
+  },
+  {
     path: "/stock/import",
     name: "import",
     component: Import,
