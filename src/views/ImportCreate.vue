@@ -89,7 +89,7 @@
               single-line
               counter
               autofocus
-              prefix="$"
+              prefix="฿"
               @focus="$event.target.select()"
             ></v-text-field>
           </template>
@@ -172,7 +172,7 @@ export default {
       ],
       search: "",
       selectedProducts: [],
-      selectedProducts2: {},
+      selectedProducts2: [],
       selected: [],
       dispSum: 0
     };
@@ -236,11 +236,12 @@ export default {
         this.editedIndex = -1;
       }, 300); */
     },
-    addDetails(){
+    addDetails() {
       this.selectedProducts.map(product => {
         importDetailsCollection
           .add({
             productID: product.ID,
+            productName: product.productName,
             importDetailCost: product.productCost,
             importDetailQuantity: product.importDetailQuantity
           })
@@ -248,13 +249,11 @@ export default {
             // console.log(docRef.id);
             let tmp = docRef.id;
             this.importDetails.push(tmp);
-            
           });
-      })
+      });
     },
     async preImport() {
-      
-/*       this.selectedProducts.map(product => {
+      /*       this.selectedProducts.map(product => {
         importDetailsCollection
           .add({
             productID: product.ID,
@@ -265,17 +264,18 @@ export default {
             console.log(docRef.id);
             let tmp = docRef.id;
             this.importDetails.push(tmp);
-            
+
           });
       }) */
       // var result = confirm("Are you sure you want to delete this item?");
-      // if (result) 
+      // if (result)
       // console.log(this.importDetails);
-      await this.addDetails()
-        // console.log(this.importDetails);
-        
-       await this.addImport()
-      
+      // console.log(this.importDetails);
+
+      await this.addDetails();
+      await this.addImport();
+
+      await this.addToStock();
 
       // this.$router.replace("/stock/");
       this.$router.back();
@@ -299,20 +299,57 @@ export default {
         });
     },
     addImport() {
-      importsCollection.add({
-        importDate: new Date(),
-        importNumber: parseInt(this.importNumber),
-        importSum: parseFloat(this.importSum),
-        employeeID: this.employeeID,
-        supplierID: this.supplierID,
-        editedAt: new Date(),
-        importDetailIDs: this.importDetails
-      }).then(docRef => {
-        let tmp = importsCollection.doc(docRef.id)
-        tmp.update({importDetailIDs: this.importDetails})
-        // console.log(tmp);
-        
-      })
+      importsCollection
+        .add({
+          importDate: new Date(),
+          importNumber: parseInt(this.importNumber),
+          importSum: parseFloat(this.importSum),
+          employeeID: this.employeeID,
+          supplierID: this.supplierID,
+          editedAt: new Date(),
+          importDetailIDs: this.importDetails
+        })
+        .then(docRef => {
+          let tmp = importsCollection.doc(docRef.id);
+          tmp.update({ importDetailIDs: this.importDetails });
+          // console.log(tmp);
+        });
+    },
+    addToStock() {
+      this.selectedProducts.map(product => {
+        productsCollection
+          .doc(product.ID)
+          .get()
+          .then(querySnapshot => {
+            return querySnapshot.data();
+          })
+          .then(data => {
+            let oldCost = data.productCost * data.quantityPerUnit;
+            // console.log(oldCost);
+            let lastCost = product.productCost * product.importDetailQuantity;
+            // console.log(lastCost);
+            let allQuantity =
+              Number(data.quantityPerUnit) +
+              Number(product.importDetailQuantity);
+            // console.log(allQuantity);
+
+            let newCost =
+              (Number(oldCost) + Number(lastCost)) / Number(allQuantity);
+            let ready = parseFloat(newCost.toFixed(2));
+            // console.log(ready);
+            /*             let forAdd = null
+            forAdd.productCost= ready */
+            return [ready, allQuantity];
+          })
+          .then(([ready, allQuantity]) => {
+            // console.log("ready",ready);
+            // console.log("allQuantity",allQuantity);
+            productsCollection.doc(product.ID).update({ productCost: ready });
+            productsCollection
+              .doc(product.ID)
+              .update({ quantityPerUnit: allQuantity });
+          });
+      });
     },
     initialize() {
       // get suppliers

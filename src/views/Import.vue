@@ -6,8 +6,8 @@
       class="elevation-1"
       loading="true"
       no-data="no data"
+      @click:row="rowClick"
     >
-      <!-- @click:row="" -->
       <template v-slot:top>
         <v-toolbar class="mb-1" flat>
           <v-toolbar-title>รายการใบสั่งซื้อ</v-toolbar-title>
@@ -150,6 +150,10 @@ export default {
     close() {
       console.log("Dialog closed");
     },
+    rowClick(item){
+      // console.log(item.importID);
+      this.$router.push('/stock/details/'+item.importID)
+    },
     deleteItem(item) {
       const index = this.imports.indexOf(item);
       var result = confirm("Are you sure you want to delete this item?");
@@ -157,8 +161,6 @@ export default {
         this.imports.splice(index, 1);
         importsCollection.doc(item.importID).delete();
         item.importDetailIDs.map( i => {
-          // console.log(i);
-          
           importDetailsCollection.doc(i).delete();
         })
       }

@@ -177,7 +177,8 @@ export default {
         sortable: true,
         value: "productName"
       },
-      { text: "ราคา", align: "right", value: "productPrice" },
+      { text: "ราคาขาย", align: "center", value: "productPrice" },
+      { text: "ราคาต้นทุนเฉลี่ย", align: "center", value: "productCost" },
       { text: "ปริมาณ", align: "center", value: "quantityPerUnit" },
       { text: "หมวดหมู่", align: "left", value: "categoryName" },
       { text: "แก้ไขล่าสุด", align: "center", value: "lastEdit" },
