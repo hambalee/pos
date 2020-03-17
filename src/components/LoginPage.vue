@@ -91,6 +91,18 @@ export default {
         );
       e.preventDefault();
     }
+  },
+  computed: {
+    alreadyLogin(){
+      return this.$store.getters.isLogin
+    }
+  },
+  watch: {
+    alreadyLogin(value){
+      if (value) {
+            this.$router.replace("/stock");
+      }
+    }
   }
 };
 </script>

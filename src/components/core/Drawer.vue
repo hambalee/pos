@@ -33,7 +33,8 @@
       </v-img>
       <!-- <hr> -->
       <v-list>
-        <v-list-item-group mandatory color="white">
+        <v-list-item-group color="white">
+        <!-- <v-list-item-group mandatory color="white"> -->
           <div>
             <v-list-item
               v-for="([icon, text, url], i) in items"
@@ -70,11 +71,11 @@ export default {
   mounted() {
  
     // this.$store.dispatch("doLogin");
-    console.log("hello from drawer mounted");
+    // console.log("hello from drawer mounted");
     
   },
   created(){
-    console.log("hello from drawer created");
+    // console.log("hello from drawer created");
 /*    if(firebase.auth().currentUser){
       this.loggedIn = true;
 

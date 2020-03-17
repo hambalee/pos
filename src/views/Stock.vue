@@ -1,116 +1,187 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="products"
-    class="elevation-1"
-    :search="search"
-    loading="true"
-  >
-    <!-- sort-by="name" -->
-    <template v-slot:top>
-      <v-toolbar flat color="white">
-        <v-toolbar-title>คลังสินค้า</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <!-- <v-spacer></v-spacer> -->
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialogAddProdcut" max-width="500px">
-          <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-2" v-on="on">
-              <v-icon>add</v-icon>
-              เพิ่มสินค้า
+  <div>
+    <v-data-table
+      :headers="headers"
+      :items="products"
+      class="elevation-1"
+      :search="search"
+      loading="true"
+    >
+      <!-- sort-desc="editedAt" -->
+      <!-- sort-by="name" -->
+      <template v-slot:top>
+        <v-toolbar flat color="white">
+          <v-toolbar-title>คลังสินค้า</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <!-- <v-spacer></v-spacer> -->
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialogAddProdcut">
+            <!--           <v-toolbar
+            flat
+            dark
+            color="primary"
+          >
+            <v-btn
+              icon
+              dark
+              @click="dialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
             </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn
+                dark
+                text
+                @click="dialog = false"
+              >
+                Save
+              </v-btn>
+            </v-toolbar-items>
+            <v-menu
+              bottom
+              right
+              offset-y
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  dark
+                  icon
+                  v-on="on"
+                >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(item, i) in items"
+                  :key="i"
+                  @click="() => {}"
+                >
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-toolbar> -->
 
-            <v-card-text>
-              <v-container>
-                <v-row @keypress.enter="save">
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.productName"
-                      label="ชื่อสินค้า"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.productPrice"
-                      label="ราคา"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.quantityPerUnit"
-                      label="ปริมาณ"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-select
-                      :items="categoryList"
-                      label="หมวดหมู่"
-                      item-text="categoryName"
-                      item-value="categoryID"
-                      v-model="selectcategoryID"
-                      dense
-                      solo
-                    ></v-select>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+            <template v-slot:activator="{ on }">
+              <v-btn color="primary" dark class="mb-2" v-on="on">
+                <v-icon>add</v-icon>
+                เพิ่มสินค้า
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">ยกเลิก</v-btn>
-              <v-btn color="blue darken-1" text @click="save">บันทึก</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.action="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">
-        edit
-      </v-icon>
-      <v-icon small @click="deleteItem(item)">
-        delete
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
-  </v-data-table>
+              <v-card-text>
+                <v-container>
+                  <v-row @keypress.enter="save">
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.productName"
+                        label="ชื่อสินค้า"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.productDetail"
+                        label="รายละเอียด"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.productPrice"
+                        label="ราคาขาย"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.productCost"
+                        label="ราคาต้นทุน"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.quantityPerUnit"
+                        label="ปริมาณ"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-select
+                        :items="categoryList"
+                        label="หมวดหมู่"
+                        item-text="categoryName"
+                        item-value="categoryID"
+                        v-model="selectcategoryID"
+                        dense
+                        solo
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">ยกเลิก</v-btn>
+                <v-btn color="blue darken-1" text @click="save">บันทึก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.action="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)">
+          edit
+        </v-icon>
+        <v-icon small @click="deleteItem(item)">
+          delete
+        </v-icon>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="initialize">Reset</v-btn>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
 import { productsCollection } from "../firebase";
 import { categoriesCollection } from "../firebase";
+import { storageRef } from "../firebase";
+import moment from "moment";
 
 export default {
   data: () => ({
+    // date: moment(Date()).format("MMMM Do YYYY, h:mm:ss a"),
+    // date: this.$options.filters.moment(new Date()),
     selectcategoryID: "",
+    selectcategoryName: "",
     search: "",
     dialogAddProdcut: false,
     headers: [
       {
         text: "ชื่อสินค้า",
         align: "left",
-        sortable: false,
+        sortable: true,
         value: "productName"
       },
       { text: "ราคา", align: "right", value: "productPrice" },
       { text: "ปริมาณ", align: "center", value: "quantityPerUnit" },
       { text: "หมวดหมู่", align: "left", value: "categoryName" },
+      { text: "แก้ไขล่าสุด", align: "center", value: "lastEdit" },
+      { text: "วันที่", align: " d-none", value: "editedAt" },
       { text: "", value: "action", sortable: false }
     ],
     products: [],
@@ -121,7 +192,9 @@ export default {
       quantityPerUnit: "",
       categoryID: "",
       categoryName: "",
-/*       category: {
+      productCost: "",
+      productDetail: ""
+      /*       category: {
         id: "",
         name: ""
       } */
@@ -134,7 +207,9 @@ export default {
       quantityPerUnit: "",
       categoryID: "",
       categoryName: "",
-/*       category: {
+      productCost: "",
+      productDetail: ""
+      /*       category: {
         id: "",
         name: ""
       } */
@@ -162,6 +237,10 @@ export default {
   },
 
   methods: {
+    moment: () => {
+      return moment();
+    },
+    // moment: () => moment(),
     addProduct() {
       console.log("this.categoryID " + this.selectcategoryID);
       /*       console.log("this.defaultSelectedCategory  " + this.defaultSelectedCategory);
@@ -175,7 +254,9 @@ export default {
           quantityPerUnit: parseFloat(this.editedItem.quantityPerUnit),
           categoryID: this.selectcategoryID,
           createdAt: new Date(),
-          editedAt: new Date()
+          editedAt: new Date(),
+          productCost: parseFloat(this.editedItem.productCost),
+          productDetail: this.editedItem.productDetail
         })
         .then(function(docRef) {
           console.log("Document written with ID: ", docRef.id);
@@ -188,6 +269,8 @@ export default {
       this.productQuantity = "";
       this.categoryName = "";
       this.selectcategoryID = "";
+      this.productCost = "";
+      this.productDetail = "";
     },
     editProduct() {
       productsCollection
@@ -197,9 +280,26 @@ export default {
           productPrice: parseFloat(this.editedItem.productPrice),
           quantityPerUnit: parseFloat(this.editedItem.quantityPerUnit),
           categoryID: this.selectcategoryID,
-          editedAt: new Date()
+          editedAt: new Date(),
+          productCost: parseFloat(this.editedItem.productCost),
+          productDetail: this.editedItem.productDetail
         })
-/*         .then(function(docRef) {
+        .then(() => {
+          this.initialize();
+          // console.log("update");
+/*           this.products.forEach( product => {
+            if(product.categoryID == this.selectcategoryID){
+              product.push({
+                ...product,
+                hello = "world"
+              })
+              product.unshift({categoryName = editedItem.categoryName})
+              product.unshift({categoryID = editedItem.categoryID})
+            }
+          }) */
+          // this.products.put(this.editedItem);
+        })
+        /*         .then(function(docRef) {
           console.log("Document written with ID: ", docRef.id);
         }) */
         .catch(function(error) {
@@ -210,6 +310,8 @@ export default {
       this.productQuantity = "";
       this.categoryName = "";
       this.selectcategoryID = "";
+      this.productCost = "";
+      this.productDetail = "";
     },
     initialize() {
       // category list for add new product
@@ -230,26 +332,33 @@ export default {
         });
       }, 3000); */
       // product list
-      productsCollection.get().then(querySnapshot => {
-        this.products = querySnapshot.docs.map(doc => {
-          let newdoc;
-          newdoc = doc.data();
-          newdoc.productID = doc.id;
-          /*           categoriesCollection
+      productsCollection
+        .orderBy("editedAt", "desc")
+        .get()
+        .then(querySnapshot => {
+          this.products = querySnapshot.docs.map(doc => {
+            let newdoc;
+            newdoc = doc.data();
+            newdoc.productID = doc.id;
+            /*           categoriesCollection
             .doc(newdoc.categoryID)
             .get()
             .then(querySnapshot => {
               newdoc.categoryName = querySnapshot.data().categoryName;
             }); */
-          // set category to each product
-          this.categoryList.forEach(cat => {
-            if (newdoc.categoryID == cat.categoryID) {
-              newdoc.categoryName = cat.categoryName;
-            }
+            // set category to each product
+            this.categoryList.forEach(cat => {
+              if (newdoc.categoryID == cat.categoryID) {
+                newdoc.categoryName = cat.categoryName;
+              }
+            });
+            // newdoc.editedAt = `${newdoc.editedAt}`
+            newdoc.lastEdit = moment(newdoc.editedAt.toDate())
+              .locale("th")
+              .format("LLLL");
+            return newdoc;
           });
-          return newdoc;
         });
-      });
 
       /*  this.products.forEach(product => {
         this.categoryList.forEach(category => {
@@ -273,6 +382,8 @@ export default {
     editItem(item) {
       this.editedIndex = this.products.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.selectcategoryID = item.categoryID;
+      this.selectcategoryName = item.categoryName;
       this.dialogAddProdcut = true;
     },
 
@@ -295,7 +406,10 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.products[this.editedIndex], this.editedItem);
+        Object.assign(this.products[this.editedIndex], this.editedItem)
+        this.products[this.editedIndex].categoryID = this.selectcategoryID
+        this.products[this.editedIndex].categoryName = this.selectcategoryName
+        
         this.editProduct();
       } else {
         // console.log("before set = " + this.editItem.categoryName);
@@ -305,7 +419,7 @@ export default {
             this.products.push(this.editedItem);
           }
         }); */
-/*         for (let cat of this.categoryList) {
+        /*         for (let cat of this.categoryList) {
           if (this.selectcategoryID == cat.categoryID) {
             this.editItem.categoryName = this.selectcategoryID;
             console.log("after set = " + this.editItem.categoryName);
@@ -318,6 +432,22 @@ export default {
         this.addProduct();
       }
       this.close();
+    },
+    async uploadToFirebase() {
+      const fileUpload = this.state.img;
+      const storage = storageRef.ref().child(`newsimg/${fileUpload.name}`);
+      storage.put(fileUpload);
+      const downloadURLx = await storage.getDownloadURL();
+      this.setState({
+        img: downloadURLx
+      });
+      this.props.createNews(this.state);
+      this.props.history.push("/");
+    }
+  },
+  filters: {
+    moment: function(date) {
+      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     }
   }
 };

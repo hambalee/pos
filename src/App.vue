@@ -39,12 +39,15 @@
 
     <Drawer v-if="$store.state.isLogged" />
     <Views />
+<!--     <Views v-if="$store.state.isLogged" />
+    <Login v-else-if="!$store.state.isLogged" /> -->
   </v-app>
 </template>
 
 <script>
 import Drawer from "@/components/core/Drawer";
 import Views from "@/components/core/Views";
+// import Login from "./components/LoginPage";
 // import firebase from "firebase";
 
 export default {
@@ -52,12 +55,13 @@ export default {
 
   components: {
     Drawer,
-    Views
+    Views,
+    // Login
   },
 
   created() {
     // this.$store.dispatch({ type: "restoreLogin" });
-    console.log("hello from app created");
+    // console.log("hello from app created");
     // console.log(this.$store.getters.isLogin);
 
 //check login
@@ -73,7 +77,7 @@ export default {
     // console.log(firebase.auth().currentUser?"hello":"worl");
   },
   mounted() {
-    console.log("hello from app mouted");
+    // console.log("hello from app mouted");
     // console.log("in app mouted",this.$store.getters.isLogin);
     // console.log(firebase.auth().currentUser);
     // this.$store.dispatch({ type: "restoreLogin" });

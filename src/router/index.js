@@ -7,6 +7,8 @@ import Transaction from "../views/Transaction.vue";
 import LoginPage from "../components/LoginPage.vue";
 // eslint-disable-next-line no-unused-vars
 import store from "../store/index";
+import Import from "../views/Import.vue";
+import ImportCreate from "../views/ImportCreate.vue";
 // eslint-disable-next-line no-unused-vars
 import firebase from "firebase";
 
@@ -88,13 +90,21 @@ const routes = [
   {
     path: "/stock/import",
     name: "import",
-    component: () =>
-      import(/* webpackChunkName: "import" */ "../views/Import.vue"),
+    component: Import,
     meta: {
       requiresAuth: true,
       title: "นำเข้า"
     }
-  }
+  },
+  {
+    path: "/stock/import/create",
+    name: "import-create",
+    component: ImportCreate,
+    meta: {
+      requiresAuth: true,
+      title: "สร้างใบสั่งซื้อ"
+    }
+  },
   /*   {
     path: "/",
     redirect: "/login"
@@ -115,16 +125,14 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta.title;
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
-      console.log("User is logined from router");
+      // console.log("User is logined from router");
       // update data or vuex state
       store.dispatch("doLogin");
-      console.log("check state", store.getters.isLogin);
+      // console.log("check state q", store.getters.isLogin);
     } else {
-      console.log("check state else", store.getters.isLogin);
-      console.log("User is not logged in. from router before each");
-/*       if (store.getters.isLogin && to.path === "/login") {
-        next("/stock");
-      } */
+      // console.log("check state else", store.getters.isLogin);
+      // console.log("User is not logged in. from router before each");
+      //if (store.getters.isLogin && to.path === "/login") next("/stock")
       if (to.meta.requiresAuth && !store.getters.isLogin) {
         next("/login");
       }
