@@ -148,7 +148,7 @@ export default {
       this.snackText = "Dialog opened";
     },
     close() {
-      console.log("Dialog closed");
+      //* console.log("Dialog closed");
     },
     rowClick(item){
       // console.log(item.importID);

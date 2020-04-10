@@ -127,6 +127,16 @@
                         solo
                       ></v-select>
                     </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-file-input
+                        accept="image/*"
+                        label="รูปภาพ"
+                        prepend-icon="mdi-camera"
+                        filled
+                        @change="onFilePicked"
+                      ></v-file-input>
+                      <!-- <input type="file" @change="previewImage" accept="image/*" > -->
+                    </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -152,6 +162,16 @@
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
+      <template v-slot:item.productImageUrl="{ item }">
+        <v-img
+          :src="item.productImageUrl"
+          lazy-src="https://picsum.photos/id/11/10/6"
+          max-width="50"
+          max-height="50"
+          class="grey lighten-2"
+          aspect-ratio="1"
+        ></v-img>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -164,6 +184,8 @@ import moment from "moment";
 
 export default {
   data: () => ({
+    image: null,
+    imageUrl: "",
     // date: moment(Date()).format("MMMM Do YYYY, h:mm:ss a"),
     // date: this.$options.filters.moment(new Date()),
     selectcategoryID: "",
@@ -171,11 +193,12 @@ export default {
     search: "",
     dialogAddProdcut: false,
     headers: [
+      { text: "รูป", align: "center", value: "productImageUrl" },
       {
         text: "ชื่อสินค้า",
         align: "left",
         sortable: true,
-        value: "productName"
+        value: "productName",
       },
       { text: "ราคาขาย", align: "center", value: "productPrice" },
       { text: "ราคาต้นทุนเฉลี่ย", align: "center", value: "productCost" },
@@ -183,7 +206,7 @@ export default {
       { text: "หมวดหมู่", align: "left", value: "categoryName" },
       { text: "แก้ไขล่าสุด", align: "center", value: "lastEdit" },
       { text: "วันที่", align: " d-none", value: "editedAt" },
-      { text: "", value: "action", sortable: false }
+      { text: "", value: "action", sortable: false },
     ],
     products: [],
     editedIndex: -1,
@@ -194,7 +217,7 @@ export default {
       categoryID: "",
       categoryName: "",
       productCost: "",
-      productDetail: ""
+      productDetail: "",
       /*       category: {
         id: "",
         name: ""
@@ -209,7 +232,7 @@ export default {
       categoryID: "",
       categoryName: "",
       productCost: "",
-      productDetail: ""
+      productDetail: "",
       /*       category: {
         id: "",
         name: ""
@@ -218,36 +241,59 @@ export default {
       categoryIDdefault: "",
       } */
     },
-    categoryList: []
+    categoryList: [],
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "เพิ่มสินค้า" : "แก้ไข";
-    }
+    },
+    // TODO: add condition for validate form
+    /*     formIsValid () {
+        return this.title !== '' &&
+          this.location !== '' &&
+          this.imageUrl !== '' &&
+          this.description !== ''
+      }, */
   },
 
   watch: {
     dialogAddProdcut(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
     this.initialize();
   },
-
+  //*Method
   methods: {
+    onFilePicked(File) {
+      let filename = File.name;
+      if (filename.lastIndexOf(".") <= 0) {
+        return alert("Please add a valid file!");
+      }
+      const fileReader = new FileReader();
+      /* fileReader.addEventListener("load", () => {
+        this.imageUrl = fileReader.result;
+      }); */
+      fileReader.readAsDataURL(File);
+      this.image = File;
+    },
+    /*     previewImage(event) {
+      let imageData = event.target.files[0];
+      console.log(imageData.name);
+    }, */
     moment: () => {
       return moment();
     },
     // moment: () => moment(),
     addProduct() {
-      console.log("this.categoryID " + this.selectcategoryID);
+      //*console.log("this.categoryID " + this.selectcategoryID);
       /*       console.log("this.defaultSelectedCategory  " + this.defaultSelectedCategory);
       console.log("this.defaultSelectedCategory.categoryID  " + this.defaultSelectedCategory.categoryID);
       console.log("this.defaultSelectedCategory.categoryname  " + this.defaultSelectedCategory.categoryname); */
-
+      let id;
       productsCollection
         .add({
           productName: this.editedItem.productName,
@@ -257,13 +303,43 @@ export default {
           createdAt: new Date(),
           editedAt: new Date(),
           productCost: parseFloat(this.editedItem.productCost),
-          productDetail: this.editedItem.productDetail
+          productDetail: this.editedItem.productDetail,
+          productImageUrl: this.imageUrl,
         })
+        // eslint-disable-next-line no-unused-vars
         .then(function(docRef) {
-          console.log("Document written with ID: ", docRef.id);
+          //*console.log("Document written with ID: ", docRef.id);
+          id = docRef.id;
+          return id;
         })
+        .then((id) => {
+          const filename = this.image.name;
+          const ext = filename.slice(filename.lastIndexOf("."));
+          // console.log("products/" + id + ext);
+          return storageRef.ref("products/" + id + ext).put(this.image);
+        })
+        .then((fileData) => {
+          storageRef
+            .ref(fileData.metadata.fullPath)
+            .getDownloadURL()
+            .then((tmp) => {
+              this.imageUrl = tmp;
+            })
+            .then(() => {
+              productsCollection
+                .doc(id)
+                .update({ productImageUrl: this.imageUrl });
+            })
+            .then(() => {
+              this.imageUrl = "";
+              this.image = null;
+              this.initialize();
+            });
+        })
+
+        // eslint-disable-next-line no-unused-vars
         .catch(function(error) {
-          console.error("Error adding document: ", error);
+          //*console.error("Error adding document: ", error);
         });
       this.productName = "";
       this.productPrice = "";
@@ -274,6 +350,7 @@ export default {
       this.productDetail = "";
     },
     editProduct() {
+      let id = this.editedItem.productID;
       productsCollection
         .doc(this.editedItem.productID)
         .update({
@@ -283,12 +360,35 @@ export default {
           categoryID: this.selectcategoryID,
           editedAt: new Date(),
           productCost: parseFloat(this.editedItem.productCost),
-          productDetail: this.editedItem.productDetail
+          productDetail: this.editedItem.productDetail,
+          productImageUrl: this.imageUrl,
         })
         .then(() => {
-          this.initialize();
-          // console.log("update");
-/*           this.products.forEach( product => {
+          const filename = this.image.name;
+          const ext = filename.slice(filename.lastIndexOf("."));
+          // console.log("products/" + id + ext);
+          return storageRef.ref("products/" + id + ext).put(this.image);
+        })
+        .then((fileData) => {
+          storageRef
+            .ref(fileData.metadata.fullPath)
+            .getDownloadURL()
+            .then((tmp) => {
+              this.imageUrl = tmp;
+            })
+            .then(() => {
+              productsCollection
+                .doc(id)
+                .update({ productImageUrl: this.imageUrl });
+            })
+            .then(() => {
+              this.imageUrl = "";
+              this.image = '';
+              this.initialize();
+            });
+        })
+        // console.log("update");
+        /*           this.products.forEach( product => {
             if(product.categoryID == this.selectcategoryID){
               product.push({
                 ...product,
@@ -298,13 +398,13 @@ export default {
               product.unshift({categoryID = editedItem.categoryID})
             }
           }) */
-          // this.products.put(this.editedItem);
-        })
+        // this.products.put(this.editedItem);
         /*         .then(function(docRef) {
           console.log("Document written with ID: ", docRef.id);
         }) */
+        // eslint-disable-next-line no-unused-vars
         .catch(function(error) {
-          console.error("Error adding document: ", error);
+          //*console.error("Error adding document: ", error);
         });
       this.productName = "";
       this.productPrice = "";
@@ -316,8 +416,8 @@ export default {
     },
     initialize() {
       // category list for add new product
-      categoriesCollection.get().then(querySnapshot => {
-        this.categoryList = querySnapshot.docs.map(doc => {
+      categoriesCollection.get().then((querySnapshot) => {
+        this.categoryList = querySnapshot.docs.map((doc) => {
           let newCategoryList = doc.data();
           newCategoryList.categoryID = doc.id;
           return newCategoryList;
@@ -336,8 +436,8 @@ export default {
       productsCollection
         .orderBy("editedAt", "desc")
         .get()
-        .then(querySnapshot => {
-          this.products = querySnapshot.docs.map(doc => {
+        .then((querySnapshot) => {
+          this.products = querySnapshot.docs.map((doc) => {
             let newdoc;
             newdoc = doc.data();
             newdoc.productID = doc.id;
@@ -348,7 +448,7 @@ export default {
               newdoc.categoryName = querySnapshot.data().categoryName;
             }); */
             // set category to each product
-            this.categoryList.forEach(cat => {
+            this.categoryList.forEach((cat) => {
               if (newdoc.categoryID == cat.categoryID) {
                 newdoc.categoryName = cat.categoryName;
               }
@@ -407,10 +507,10 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.products[this.editedIndex], this.editedItem)
-        this.products[this.editedIndex].categoryID = this.selectcategoryID
-        this.products[this.editedIndex].categoryName = this.selectcategoryName
-        
+        Object.assign(this.products[this.editedIndex], this.editedItem);
+        this.products[this.editedIndex].categoryID = this.selectcategoryID;
+        this.products[this.editedIndex].categoryName = this.selectcategoryName;
+
         this.editProduct();
       } else {
         // console.log("before set = " + this.editItem.categoryName);
@@ -440,17 +540,17 @@ export default {
       storage.put(fileUpload);
       const downloadURLx = await storage.getDownloadURL();
       this.setState({
-        img: downloadURLx
+        img: downloadURLx,
       });
       this.props.createNews(this.state);
       this.props.history.push("/");
-    }
+    },
   },
   filters: {
     moment: function(date) {
       return moment(date).format("MMMM Do YYYY, h:mm:ss a");
-    }
-  }
+    },
+  },
 };
 </script>
 

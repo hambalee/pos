@@ -114,13 +114,13 @@ export default {
         })
         // .then(q => this.imports = q.data())
         .then(i => {
-          console.log("i", i.imoprtDetailIDs);
+          //*console.log("i", i.imoprtDetailIDs);
           let l = [];
           l.push({
             id: i.imoprtDetailIDs,
             name: i.i
           });
-          console.log("l", l);
+          //*console.log("l", l);
 
           // // console.log(this.imports)----****
           // this.imports.importDetailIDs.map(id => {
@@ -227,7 +227,7 @@ export default {
         .doc(this.$route.params.id)
         .get()
         .then(querySnapshot => {
-          console.log(querySnapshot.data());
+          //*console.log(querySnapshot.data());
           this.imports = querySnapshot.data()
           let id = [];
           querySnapshot.data().importDetailIDs.forEach(importid => {

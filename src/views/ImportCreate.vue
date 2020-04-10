@@ -294,8 +294,9 @@ export default {
         .then(q => {
           this.importNumber = q.docs[0].data().importNumber + 1;
         })
+        // eslint-disable-next-line no-unused-vars
         .catch(err => {
-          console.log(err);
+          //*console.log(err);
         });
     },
     addImport() {
@@ -335,7 +336,7 @@ export default {
 
             let newCost =
               (Number(oldCost) + Number(lastCost)) / Number(allQuantity);
-            let ready = parseFloat(newCost.toFixed(2));
+            let ready = parseFloat(newCost.toFixed());
             // console.log(ready);
             /*             let forAdd = null
             forAdd.productCost= ready */

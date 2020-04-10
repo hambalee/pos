@@ -88,9 +88,9 @@ export default {
       ["add_box", "นำเข้า", "/stock/import"],
       ["shopping_cart", "หน้าร้าน", "/shop"],
       ["show_chart", "รายงาน", "/report"],
-      //["history", "ประวัติ", "/transaction"],
-      //["customer", "ลูกค้า", "/customer"],
-      //["business", "ผู้ผลิต", "/supplier"],
+      ["history", "ประวัติ", "/transaction"],
+      ["people", "ลูกค้า", "/customer"],
+      ["business", "ผู้ผลิต", "/supplier"],
     ],
     loggedIn: false
   }),

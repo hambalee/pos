@@ -58,9 +58,10 @@ export default {
         console.log(res);
 
       }) */
+      // eslint-disable-next-line no-unused-vars
       storageRef.ref(`${this.files[0].name}`).put(fd).then(function(snapshot) {
         //console.log("Uploaded a blob or file!");
-        console.log(snapshot);
+        //*console.log(snapshot);
 
       });
     },
@@ -72,11 +73,13 @@ export default {
           quantity: this.productQuantity,
           createdAt: new Date()
         })
+        // eslint-disable-next-line no-unused-vars
         .then(function(docRef) {
-          console.log("Document written with ID: ", docRef.id);
+          //*console.log("Document written with ID: ", docRef.id);
         })
+        // eslint-disable-next-line no-unused-vars
         .catch(function(error) {
-          console.error("Error adding document: ", error);
+          //*console.error("Error adding document: ", error);
         });
       this.productName = "";
       this.productPrice = "";
