@@ -7,8 +7,6 @@ import Transaction from "../views/Transaction.vue";
 import LoginPage from "../components/LoginPage.vue";
 // eslint-disable-next-line no-unused-vars
 import store from "../store/index";
-import Import from "../views/Import.vue";
-import ImportCreate from "../views/ImportCreate.vue";
 // eslint-disable-next-line no-unused-vars
 import firebase from "firebase";
 
@@ -21,16 +19,16 @@ const routes = [
     component: Stock,
     meta: {
       requiresAuth: true,
-      title: "คลังสินค้า"
-    }
+      title: "คลังสินค้า",
+    },
   },
   {
     path: "/login",
     name: "login",
     component: LoginPage,
     meta: {
-      title: "เข้าสู่ระบบ"
-    }
+      title: "เข้าสู่ระบบ",
+    },
   },
   {
     path: "/shop",
@@ -38,8 +36,8 @@ const routes = [
     component: Shop,
     meta: {
       requiresAuth: true,
-      title: "หน้าร้าน"
-    }
+      title: "หน้าร้าน",
+    },
   },
   {
     path: "/report",
@@ -47,8 +45,8 @@ const routes = [
     component: Report,
     meta: {
       requiresAuth: true,
-      title: "รายงาน"
-    }
+      title: "รายงาน",
+    },
   },
   {
     path: "/transaction",
@@ -56,83 +54,99 @@ const routes = [
     component: Transaction,
     meta: {
       requiresAuth: true,
-      title: "ประวัติ"
-    }
+      title: "ประวัติ",
+    },
   },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  },
+  // {
+  //   path: "/about",
+  //   name: "about",
+  //   // route level code-splitting
+  //   // this generates a separate chunk (about.[hash].js) for this route
+  //   // which is lazy-loaded when the route is visited.
+  //   component: () =>
+  //     import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  // },
   {
     path: "/supplier",
     name: "supplier",
     component: () =>
-      import(/* webpackChunkName: "supplier" */ "../views/Supplier.vue"),
+      import("../views/Supplier.vue"),
     meta: {
       requiresAuth: true,
-      title: "ผู้ผลิต"
-    }
+      title: "ผู้ผลิต",
+    },
   },
   {
     path: "/customer",
     name: "customer",
     component: () =>
-      import(/* webpackChunkName: "customer" */ "../views/Customer.vue"),
+      import("../views/Customer.vue"),
     meta: {
-      title: "ลูกค้า"
-    }
+      title: "ลูกค้า",
+    },
   },
   {
     path: "/stock/details/:id",
     name: "stock-view",
     component: () =>
-      import(/* webpackChunkName: "customer" */ "../views/StockView.vue"),
+      import("../views/StockView.vue"),
     meta: {
-      title: "รายละเอียด"
-    }
+      title: "รายละเอียด",
+    },
   },
   {
     path: "/stock/import",
     name: "import",
-    component: Import,
+    component: () => import(/* webpackChunkName: "import" */"@/views/Import"),
     meta: {
       requiresAuth: true,
-      title: "นำเข้า"
-    }
+      title: "นำเข้า",
+    },
   },
   {
     path: "/stock/import/create",
     name: "import-create",
-    component: ImportCreate,
+    component: () => import("@/views/ImportCreate"),
     meta: {
       requiresAuth: true,
-      title: "สร้างใบสั่งซื้อ"
-    }
+      title: "สร้างใบสั่งซื้อ",
+    },
   },
-  /*   {
+    {
     path: "/",
     redirect: "/login"
-  }, */
-  /*   {
-    path: "*",
-    redirect: "/about"
-  } */
+  },
+    {
+    path: "/home",
+    name: 'home',
+    redirect: "/stock",
+  },
+  //   {
+  //   path: "*",
+  //   name: "notFound",
+  //   component: () => import(/* webpackChunkName: "NotFound" */"@/views/NotFound")
+  // }
+  {
+    path: "/404",
+    alias: "*",
+    name: "notFound",
+    component: () => import(/* webpackChunkName: "NotFound" */"@/views/NotFound"),
+    meta: {
+      requiresAuth: true,
+      title: "Not Found",
+    },
+  }
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title;
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       // console.log("User is logined from router");
       // update data or vuex state
