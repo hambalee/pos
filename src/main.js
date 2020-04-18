@@ -6,9 +6,11 @@ import vuetify from './plugins/vuetify';
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import './firebase.js'
 import { firestorePlugin } from 'vuefire'
+import { currency } from './currency'
+
+Vue.filter('currency', currency)
 
 Vue.use(firestorePlugin)
-
 
 Vue.config.productionTip = false
 
