@@ -125,7 +125,7 @@
     </div> -->
 
     <!-- card product list start -->
-<!--     <v-card class="mx-auto" max-width="200"  v-for="item in items" :key="item">
+    <!--     <v-card class="mx-auto" max-width="200"  v-for="item in items" :key="item">
       <v-img
         class="white--text align-end"
         height="150"
@@ -139,7 +139,7 @@
       </v-card-text>
     </v-card> -->
     <!-- card product list end -->
-    <v-row>
+    <!--     <v-row>
     <v-col cols="12" sm="6" offset-sm="3" >
       <v-card>
         <v-container fluid>
@@ -173,65 +173,79 @@
         </v-container>
       </v-card>
     </v-col>
-  </v-row>
+  </v-row> -->
+    <!--     <ProductItem
+      v-for="product in products"
+      :product="product"
+      :key="product.productID"
+      @onAddProduct="addProduct"
+    />
+    <Payment :products="cart"/> -->
+
+    <ProductList />
+    <hr />
+    <ShoppingCart />
   </div>
 </template>
 
 <script>
-import { productsCollection } from "../firebase";
-import { categoriesCollection } from "../firebase";
+// import { productsCollection, categoriesCollection } from '../firebase'
+// import shop from '@/api/shop'
+// import { mapState, mapActions } from 'vuex'
+import ProductList from '@/components/ProductList.vue'
+import ShoppingCart from '@/components/ShoppingCart.vue'
 
 export default {
-  name: "Shop",
-  created() {
-    this.initialize();
-  },
-  data() {
-    return {
-      cart: [],
-      products: [],
-      items: [{ message: "Fooadsfasdfasdfasdfasdfasdfasdfsadf" }, { message: "Basadfsadfasdfasdfrasdfsdfasdfasdfasdfasdf" }]
-    };
-  },
-  methods: {
-    onClickProduct(name, price, qty = 1) {
-      this.cart.push({ name, price, qty });
-    },
-    initialize() {
-      // category list for add new product
-      categoriesCollection.get().then(querySnapshot => {
-        this.categoryList = querySnapshot.docs.map(doc => {
-          let newCategoryList = doc.data();
-          newCategoryList.categoryID = doc.id;
-          return newCategoryList;
-        });
-      });
-      productsCollection.get().then(querySnapshot => {
-        this.products = querySnapshot.docs.map(doc => {
-          let newdoc;
-          newdoc = doc.data();
-          newdoc.productID = doc.id;
-
-          this.categoryList.forEach(cat => {
-            if (newdoc.categoryID == cat.categoryID) {
-              newdoc.categoryName = cat.categoryName;
-            }
-          });
-          return newdoc;
-        });
-      });
-    }
+  name: 'Shop',
+  components: {
+    ProductList,
+    ShoppingCart
   }
-};
+  /*   created() {
+    this.initialize()
+  }, */
+  /*   data() {
+    return {
+      // products: [],
+      // items: [{ message: "Fooadsfasdfasdfasdfasdfasdfasdfsadf" }, { message: "Basadfsadfasdfasdfrasdfsdfasdfasdfasdfasdf" }]
+    }
+  }, */
+  /*   methods: {
+    //find product in cart if found qty++ else push
+    // addProduct(product) {
+    //   this.cart.push(product)
+    // },
+    initialize() {
+      // get products
+      // shop.getProducts().then((products)=> this.products = products)
+      // shop.getProducts().then(products => console.log(products))
+      
+      // console.log(this.$store.dispatch('products/getAllProducts'));
+      
+    }
+  }, */
+  /*   computed: mapState({
+    products: state => state.products.all
+  },
+  // console.log(this.products())
+  ), */
+  /*   computed: {
+    name() {
+      return mapState({
+    products: state => state.products.all
+  })
+    }
+  }, */
+}
 </script>
 
 <style>
-.card-outter {
+/* .card-outter {
   position: relative;
   padding-bottom: 50px;
 }
 .card-actions {
   position: absolute;
   bottom: 0;
-}
+} */
 </style>
