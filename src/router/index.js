@@ -1,61 +1,61 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Stock from "../views/Stock.vue";
-import Shop from "../views/Shop.vue";
-import Report from "../views/Report.vue";
-import Transaction from "../views/Transaction.vue";
-import LoginPage from "../components/LoginPage.vue";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Stock from '../views/Stock.vue'
+import Shop from '../views/Shop.vue'
+import Report from '../views/Report.vue'
+import Transaction from '../views/Transaction.vue'
+import LoginPage from '@/views/LoginPage.vue'
 // eslint-disable-next-line no-unused-vars
-import store from "../store/index";
+import store from '../store/index'
 // eslint-disable-next-line no-unused-vars
-import firebase from "firebase";
+import firebase from 'firebase'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/stock",
-    name: "stock",
+    path: '/stock',
+    name: 'stock',
     component: Stock,
     meta: {
       requiresAuth: true,
-      title: "คลังสินค้า",
-    },
+      title: 'คลังสินค้า'
+    }
   },
   {
-    path: "/login",
-    name: "login",
+    path: '/login',
+    name: 'login',
     component: LoginPage,
     meta: {
-      title: "เข้าสู่ระบบ",
-    },
+      title: 'เข้าสู่ระบบ'
+    }
   },
   {
-    path: "/shop",
-    name: "shop",
+    path: '/shop',
+    name: 'shop',
     component: Shop,
     meta: {
       requiresAuth: true,
-      title: "หน้าร้าน",
-    },
+      title: 'หน้าร้าน'
+    }
   },
   {
-    path: "/report",
-    name: "report",
+    path: '/report',
+    name: 'report',
     component: Report,
     meta: {
       requiresAuth: true,
-      title: "รายงาน",
-    },
+      title: 'รายงาน'
+    }
   },
   {
-    path: "/transaction",
-    name: "transaction",
+    path: '/transaction',
+    name: 'transaction',
     component: Transaction,
     meta: {
       requiresAuth: true,
-      title: "ประวัติ",
-    },
+      title: 'ประวัติ'
+    }
   },
   // {
   //   path: "/about",
@@ -67,59 +67,56 @@ const routes = [
   //     import(/* webpackChunkName: "about" */ "../views/About.vue"),
   // },
   {
-    path: "/supplier",
-    name: "supplier",
-    component: () =>
-      import("../views/Supplier.vue"),
+    path: '/supplier',
+    name: 'supplier',
+    component: () => import('../views/Supplier.vue'),
     meta: {
       requiresAuth: true,
-      title: "ผู้ผลิต",
-    },
+      title: 'ผู้ผลิต'
+    }
   },
   {
-    path: "/customer",
-    name: "customer",
-    component: () =>
-      import("../views/Customer.vue"),
+    path: '/customer',
+    name: 'customer',
+    component: () => import('../views/Customer.vue'),
     meta: {
-      title: "ลูกค้า",
-    },
+      title: 'ลูกค้า'
+    }
   },
   {
-    path: "/stock/details/:id",
-    name: "stock-view",
-    component: () =>
-      import("../views/StockView.vue"),
+    path: '/stock/details/:id',
+    name: 'stock-view',
+    component: () => import('../views/StockView.vue'),
     meta: {
-      title: "รายละเอียด",
-    },
+      title: 'รายละเอียด'
+    }
   },
   {
-    path: "/stock/import",
-    name: "import",
-    component: () => import(/* webpackChunkName: "import" */"@/views/Import"),
+    path: '/stock/import',
+    name: 'import',
+    component: () => import(/* webpackChunkName: "import" */ '@/views/Import'),
     meta: {
       requiresAuth: true,
-      title: "นำเข้า",
-    },
+      title: 'นำเข้า'
+    }
   },
   {
-    path: "/stock/import/create",
-    name: "import-create",
-    component: () => import("@/views/ImportCreate"),
+    path: '/stock/import/create',
+    name: 'import-create',
+    component: () => import('@/views/ImportCreate'),
     meta: {
       requiresAuth: true,
-      title: "สร้างใบสั่งซื้อ",
-    },
+      title: 'สร้างใบสั่งซื้อ'
+    }
   },
-    {
-    path: "/",
-    redirect: "/login"
+  {
+    path: '/',
+    redirect: '/login'
   },
-    {
-    path: "/home",
+  {
+    path: '/home',
     name: 'home',
-    redirect: "/stock",
+    redirect: '/stock'
   },
   //   {
   //   path: "*",
@@ -127,41 +124,42 @@ const routes = [
   //   component: () => import(/* webpackChunkName: "NotFound" */"@/views/NotFound")
   // }
   {
-    path: "/404",
-    alias: "*",
-    name: "notFound",
-    component: () => import(/* webpackChunkName: "NotFound" */"@/views/NotFound"),
+    path: '/404',
+    alias: '*',
+    name: 'notFound',
+    component: () =>
+      import(/* webpackChunkName: "NotFound" */ '@/views/NotFound'),
     meta: {
       requiresAuth: true,
-      title: "Not Found",
-    },
+      title: 'Not Found'
+    }
   }
-];
+]
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
-  routes,
-});
+  routes
+})
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title;
-  firebase.auth().onAuthStateChanged((user) => {
+  document.title = to.meta.title
+  firebase.auth().onAuthStateChanged(user => {
     if (user) {
       // console.log("User is logined from router");
       // update data or vuex state
-      store.dispatch("doLogin");
+      store.dispatch('doLogin')
       // console.log("check state q", store.getters.isLogin);
     } else {
       // console.log("check state else", store.getters.isLogin);
       // console.log("User is not logged in. from router before each");
       //if (store.getters.isLogin && to.path === "/login") next("/stock")
       if (to.meta.requiresAuth && !store.getters.isLogin) {
-        next("/login");
+        next('/login')
       }
     }
-  });
-  next();
+  })
+  next()
 
   /*   const requiresAuth = to.meta.requiresAuth
   if (requiresAuth && !this.$store.getters.isLogin) {
@@ -188,6 +186,6 @@ router.beforeEach((to, from, next) => {
   /*   if (requiresAuth && !store.getters.isLogin) {
     next("/login");
   } */
-});
+})
 
-export default router;
+export default router

@@ -135,6 +135,7 @@
                         filled
                         @change="onFilePicked"
                       ></v-file-input>
+                        <!-- v-model="editedItem.imageUrl" -->
                       <!-- <input type="file" @change="previewImage" accept="image/*" > -->
                     </v-col>
                   </v-row>
@@ -177,47 +178,50 @@
 </template>
 
 <script>
-import { productsCollection } from "../firebase";
-import { categoriesCollection } from "../firebase";
-import { storageRef } from "../firebase";
-import moment from "moment";
+import {
+  productsCollection,
+  categoriesCollection,
+  storageRef
+} from '../firebase'
+import moment from 'moment'
 
 export default {
   data: () => ({
     image: null,
-    imageUrl: "",
+    imageUrl: '',
     // date: moment(Date()).format("MMMM Do YYYY, h:mm:ss a"),
     // date: this.$options.filters.moment(new Date()),
-    selectcategoryID: "",
-    selectcategoryName: "",
-    search: "",
+    selectcategoryID: '',
+    selectcategoryName: '',
+    search: '',
     dialogAddProdcut: false,
     headers: [
-      { text: "รูป", align: "center", value: "productImageUrl" },
+      { text: 'รูป', align: 'center', value: 'productImageUrl' },
       {
-        text: "ชื่อสินค้า",
-        align: "left",
+        text: 'ชื่อสินค้า',
+        align: 'left',
         sortable: true,
-        value: "productName",
+        value: 'productName'
       },
-      { text: "ราคาขาย", align: "center", value: "productPrice" },
-      { text: "ราคาต้นทุนเฉลี่ย", align: "center", value: "productCost" },
-      { text: "ปริมาณ", align: "center", value: "quantityPerUnit" },
-      { text: "หมวดหมู่", align: "left", value: "categoryName" },
-      { text: "แก้ไขล่าสุด", align: "center", value: "lastEdit" },
-      { text: "วันที่", align: " d-none", value: "editedAt" },
-      { text: "", value: "action", sortable: false },
+      { text: 'ราคาขาย', align: 'center', value: 'productPrice' },
+      { text: 'ราคาต้นทุนเฉลี่ย', align: 'center', value: 'productCost' },
+      { text: 'ปริมาณ', align: 'center', value: 'quantityPerUnit' },
+      { text: 'หมวดหมู่', align: 'left', value: 'categoryName' },
+      { text: 'แก้ไขล่าสุด', align: 'center', value: 'lastEdit' },
+      { text: 'วันที่', align: ' d-none', value: 'editedAt' },
+      { text: '', value: 'action', sortable: false }
     ],
     products: [],
     editedIndex: -1,
     editedItem: {
-      productName: "",
-      productPrice: "",
-      quantityPerUnit: "",
-      categoryID: "",
-      categoryName: "",
-      productCost: "",
-      productDetail: "",
+      productName: '',
+      productPrice: '',
+      quantityPerUnit: '',
+      categoryID: '',
+      categoryName: '',
+      productCost: '',
+      productDetail: '',
+      imageUrl: ''
       /*       category: {
         id: "",
         name: ""
@@ -226,13 +230,14 @@ export default {
       } */
     },
     defaultItem: {
-      productName: "",
-      productPrice: "",
-      quantityPerUnit: "",
-      categoryID: "",
-      categoryName: "",
-      productCost: "",
-      productDetail: "",
+      productName: '',
+      productPrice: '',
+      quantityPerUnit: '',
+      categoryID: '',
+      categoryName: '',
+      productCost: '',
+      productDetail: '',
+      imageUrl: ''
       /*       category: {
         id: "",
         name: ""
@@ -241,13 +246,13 @@ export default {
       categoryIDdefault: "",
       } */
     },
-    categoryList: [],
+    categoryList: []
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "เพิ่มสินค้า" : "แก้ไข";
-    },
+      return this.editedIndex === -1 ? 'เพิ่มสินค้า' : 'แก้ไข'
+    }
     // TODO: add condition for validate form
     /*     formIsValid () {
         return this.title !== '' &&
@@ -259,33 +264,33 @@ export default {
 
   watch: {
     dialogAddProdcut(val) {
-      val || this.close();
-    },
+      val || this.close()
+    }
   },
 
   created() {
-    this.initialize();
+    this.initialize()
   },
   //*Method
   methods: {
     onFilePicked(File) {
-      let filename = File.name;
-      if (filename.lastIndexOf(".") <= 0) {
-        return alert("Please add a valid file!");
+      let filename = File.name
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert('Please add a valid file!')
       }
-      const fileReader = new FileReader();
+      const fileReader = new FileReader()
       /* fileReader.addEventListener("load", () => {
         this.imageUrl = fileReader.result;
       }); */
-      fileReader.readAsDataURL(File);
-      this.image = File;
+      fileReader.readAsDataURL(File)
+      this.image = File
     },
     /*     previewImage(event) {
       let imageData = event.target.files[0];
       console.log(imageData.name);
     }, */
     moment: () => {
-      return moment();
+      return moment()
     },
     // moment: () => moment(),
     addProduct() {
@@ -293,7 +298,7 @@ export default {
       /*       console.log("this.defaultSelectedCategory  " + this.defaultSelectedCategory);
       console.log("this.defaultSelectedCategory.categoryID  " + this.defaultSelectedCategory.categoryID);
       console.log("this.defaultSelectedCategory.categoryname  " + this.defaultSelectedCategory.categoryname); */
-      let id;
+      let id
       productsCollection
         .add({
           productName: this.editedItem.productName,
@@ -304,53 +309,53 @@ export default {
           editedAt: new Date(),
           productCost: parseFloat(this.editedItem.productCost),
           productDetail: this.editedItem.productDetail,
-          productImageUrl: this.imageUrl,
+          productImageUrl: this.imageUrl
         })
         // eslint-disable-next-line no-unused-vars
         .then(function(docRef) {
           //*console.log("Document written with ID: ", docRef.id);
-          id = docRef.id;
-          return id;
+          id = docRef.id
+          return id
         })
-        .then((id) => {
-          const filename = this.image.name;
-          const ext = filename.slice(filename.lastIndexOf("."));
+        .then(id => {
+          const filename = this.image.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
           // console.log("products/" + id + ext);
-          return storageRef.ref("products/" + id + ext).put(this.image);
+          return storageRef.ref('products/' + id + ext).put(this.image)
         })
-        .then((fileData) => {
+        .then(fileData => {
           storageRef
             .ref(fileData.metadata.fullPath)
             .getDownloadURL()
-            .then((tmp) => {
-              this.imageUrl = tmp;
+            .then(tmp => {
+              this.imageUrl = tmp
             })
             .then(() => {
               productsCollection
                 .doc(id)
-                .update({ productImageUrl: this.imageUrl });
+                .update({ productImageUrl: this.imageUrl })
             })
             .then(() => {
-              this.imageUrl = "";
-              this.image = null;
-              this.initialize();
-            });
+              this.imageUrl = ''
+              this.image = null
+              this.initialize()
+            })
         })
 
         // eslint-disable-next-line no-unused-vars
         .catch(function(error) {
           //*console.error("Error adding document: ", error);
-        });
-      this.productName = "";
-      this.productPrice = "";
-      this.productQuantity = "";
-      this.categoryName = "";
-      this.selectcategoryID = "";
-      this.productCost = "";
-      this.productDetail = "";
+        })
+      this.productName = ''
+      this.productPrice = ''
+      this.productQuantity = ''
+      this.categoryName = ''
+      this.selectcategoryID = ''
+      this.productCost = ''
+      this.productDetail = ''
     },
     editProduct() {
-      let id = this.editedItem.productID;
+      let id = this.editedItem.productID
       productsCollection
         .doc(this.editedItem.productID)
         .update({
@@ -361,31 +366,31 @@ export default {
           editedAt: new Date(),
           productCost: parseFloat(this.editedItem.productCost),
           productDetail: this.editedItem.productDetail,
-          productImageUrl: this.imageUrl,
+          productImageUrl: this.imageUrl
         })
         .then(() => {
-          const filename = this.image.name;
-          const ext = filename.slice(filename.lastIndexOf("."));
+          const filename = this.image.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
           // console.log("products/" + id + ext);
-          return storageRef.ref("products/" + id + ext).put(this.image);
+          return storageRef.ref('products/' + id + ext).put(this.image)
         })
-        .then((fileData) => {
+        .then(fileData => {
           storageRef
             .ref(fileData.metadata.fullPath)
             .getDownloadURL()
-            .then((tmp) => {
-              this.imageUrl = tmp;
+            .then(tmp => {
+              this.imageUrl = tmp
             })
             .then(() => {
               productsCollection
                 .doc(id)
-                .update({ productImageUrl: this.imageUrl });
+                .update({ productImageUrl: this.imageUrl })
             })
             .then(() => {
-              this.imageUrl = "";
-              this.image = '';
-              this.initialize();
-            });
+              this.imageUrl = ''
+              this.image = ''
+              this.initialize()
+            })
         })
         // console.log("update");
         /*           this.products.forEach( product => {
@@ -405,24 +410,24 @@ export default {
         // eslint-disable-next-line no-unused-vars
         .catch(function(error) {
           //*console.error("Error adding document: ", error);
-        });
-      this.productName = "";
-      this.productPrice = "";
-      this.productQuantity = "";
-      this.categoryName = "";
-      this.selectcategoryID = "";
-      this.productCost = "";
-      this.productDetail = "";
+        })
+      this.productName = ''
+      this.productPrice = ''
+      this.productQuantity = ''
+      this.categoryName = ''
+      this.selectcategoryID = ''
+      this.productCost = ''
+      this.productDetail = ''
     },
     initialize() {
       // category list for add new product
-      categoriesCollection.get().then((querySnapshot) => {
-        this.categoryList = querySnapshot.docs.map((doc) => {
-          let newCategoryList = doc.data();
-          newCategoryList.categoryID = doc.id;
-          return newCategoryList;
-        });
-      });
+      categoriesCollection.get().then(querySnapshot => {
+        this.categoryList = querySnapshot.docs.map(doc => {
+          let newCategoryList = doc.data()
+          newCategoryList.categoryID = doc.id
+          return newCategoryList
+        })
+      })
       // test set category to product
       /*       this.categoryList.forEach(cat => {
         console.log(cat);
@@ -434,13 +439,13 @@ export default {
       }, 3000); */
       // product list
       productsCollection
-        .orderBy("editedAt", "desc")
+        .orderBy('editedAt', 'desc')
         .get()
-        .then((querySnapshot) => {
-          this.products = querySnapshot.docs.map((doc) => {
-            let newdoc;
-            newdoc = doc.data();
-            newdoc.productID = doc.id;
+        .then(querySnapshot => {
+          this.products = querySnapshot.docs.map(doc => {
+            let newdoc
+            newdoc = doc.data()
+            newdoc.productID = doc.id
             /*           categoriesCollection
             .doc(newdoc.categoryID)
             .get()
@@ -448,18 +453,18 @@ export default {
               newdoc.categoryName = querySnapshot.data().categoryName;
             }); */
             // set category to each product
-            this.categoryList.forEach((cat) => {
+            this.categoryList.forEach(cat => {
               if (newdoc.categoryID == cat.categoryID) {
-                newdoc.categoryName = cat.categoryName;
+                newdoc.categoryName = cat.categoryName
               }
-            });
+            })
             // newdoc.editedAt = `${newdoc.editedAt}`
             newdoc.lastEdit = moment(newdoc.editedAt.toDate())
-              .locale("th")
-              .format("LLLL");
-            return newdoc;
-          });
-        });
+              .locale('th')
+              .format('LLLL')
+            return newdoc
+          })
+        })
 
       /*  this.products.forEach(product => {
         this.categoryList.forEach(category => {
@@ -481,37 +486,37 @@ export default {
       }, 3000); */
     },
     editItem(item) {
-      this.editedIndex = this.products.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.selectcategoryID = item.categoryID;
-      this.selectcategoryName = item.categoryName;
-      this.dialogAddProdcut = true;
+      this.editedIndex = this.products.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.selectcategoryID = item.categoryID
+      this.selectcategoryName = item.categoryName
+      this.dialogAddProdcut = true
     },
 
     deleteItem(item) {
-      const index = this.products.indexOf(item);
-      var result = confirm("Are you sure you want to delete this item?");
+      const index = this.products.indexOf(item)
+      var result = confirm('Are you sure you want to delete this item?')
       if (result) {
-        this.products.splice(index, 1);
-        productsCollection.doc(item.productID).delete();
+        this.products.splice(index, 1)
+        productsCollection.doc(item.productID).delete()
       }
     },
 
     close() {
-      this.dialogAddProdcut = false;
+      this.dialogAddProdcut = false
       setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      }, 300)
     },
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.products[this.editedIndex], this.editedItem);
-        this.products[this.editedIndex].categoryID = this.selectcategoryID;
-        this.products[this.editedIndex].categoryName = this.selectcategoryName;
+        Object.assign(this.products[this.editedIndex], this.editedItem)
+        this.products[this.editedIndex].categoryID = this.selectcategoryID
+        this.products[this.editedIndex].categoryName = this.selectcategoryName
 
-        this.editProduct();
+        this.editProduct()
       } else {
         // console.log("before set = " + this.editItem.categoryName);
         /*         this.categoryList.forEach(cat => {
@@ -528,30 +533,30 @@ export default {
             break;
           }
         } */
-        this.products.push(this.editedItem);
+        this.products.push(this.editedItem)
 
-        this.addProduct();
+        this.addProduct()
       }
-      this.close();
+      this.close()
     },
     async uploadToFirebase() {
-      const fileUpload = this.state.img;
-      const storage = storageRef.ref().child(`newsimg/${fileUpload.name}`);
-      storage.put(fileUpload);
-      const downloadURLx = await storage.getDownloadURL();
+      const fileUpload = this.state.img
+      const storage = storageRef.ref().child(`newsimg/${fileUpload.name}`)
+      storage.put(fileUpload)
+      const downloadURLx = await storage.getDownloadURL()
       this.setState({
-        img: downloadURLx,
-      });
-      this.props.createNews(this.state);
-      this.props.history.push("/");
-    },
+        img: downloadURLx
+      })
+      this.props.createNews(this.state)
+      this.props.history.push('/')
+    }
   },
   filters: {
     moment: function(date) {
-      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
-    },
-  },
-};
+      return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+    }
+  }
+}
 </script>
 
 <style></style>

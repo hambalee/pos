@@ -39,23 +39,23 @@
 
     <Drawer v-if="$store.state.isLogged" />
     <Views />
-<!--     <Views v-if="$store.state.isLogged" />
+    <!--     <Views v-if="$store.state.isLogged" />
     <Login v-else-if="!$store.state.isLogged" /> -->
   </v-app>
 </template>
 
 <script>
-import Drawer from "@/components/core/Drawer";
-import Views from "@/components/core/Views";
+import Drawer from '@/components/core/Drawer'
+import Views from '@/components/core/Views'
 // import Login from "./components/LoginPage";
 // import firebase from "firebase";
 
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
     Drawer,
-    Views,
+    Views
     // Login
   },
 
@@ -63,9 +63,8 @@ export default {
     // this.$store.dispatch({ type: "restoreLogin" });
     // console.log("hello from app created");
     // console.log(this.$store.getters.isLogin);
-
-//check login
-/*     firebase.auth().onAuthStateChanged(user => {
+    //check login
+    /*     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log("User is logined from app created");
         // update data or vuex state
@@ -86,5 +85,5 @@ export default {
   data: () => ({
     //
   })
-};
+}
 </script>
