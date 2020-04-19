@@ -82,7 +82,7 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(
           () => {
-            this.$store.dispatch("doLogin");
+            this.$store.dispatch("user/doLogin");
             this.$router.replace("/stock");
           },
           err => {

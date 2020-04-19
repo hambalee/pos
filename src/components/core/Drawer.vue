@@ -104,7 +104,7 @@ export default {
         .signOut()
         .then(() => {
           this.$router.replace("/login");
-          this.$store.dispatch("doLogout");
+          this.$store.dispatch("user/doLogout");
         });
     }
   },

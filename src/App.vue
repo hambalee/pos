@@ -37,7 +37,7 @@
       </v-btn>
     </v-app-bar> -->
 
-    <Drawer v-if="$store.state.isLogged" />
+    <Drawer v-if="$store.state.user.isLogged" />
     <Views />
     <!--     <Views v-if="$store.state.isLogged" />
     <Login v-else-if="!$store.state.isLogged" /> -->

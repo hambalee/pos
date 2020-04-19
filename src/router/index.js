@@ -148,13 +148,13 @@ router.beforeEach((to, from, next) => {
     if (user) {
       // console.log("User is logined from router");
       // update data or vuex state
-      store.dispatch('doLogin')
+      store.dispatch('user/doLogin')
       // console.log("check state q", store.getters.isLogin);
     } else {
       // console.log("check state else", store.getters.isLogin);
       // console.log("User is not logged in. from router before each");
       //if (store.getters.isLogin && to.path === "/login") next("/stock")
-      if (to.meta.requiresAuth && !store.getters.isLogin) {
+      if (to.meta.requiresAuth && !store.getters['user/isLogin']) {
         next('/login')
       }
     }
