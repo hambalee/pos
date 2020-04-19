@@ -19,7 +19,7 @@
       >Checkout</v-btn
     > -->
     <v-btn @click="checkout" v-if="total > 0">Checkout</v-btn>
-    <p v-if="checkoutStatus">{{ checkoutStatus }}</p>
+    <p v-if="checkoutStatus && total == 0">{{ checkoutStatus }}</p>
   </div>
 </template>
 
@@ -29,8 +29,8 @@ export default {
   name: 'ShoppingCart',
   computed: {
     ...mapGetters({
-      products: 'cartProducts',
-      total: 'cartTotal'
+      products: 'cart/cartProducts',
+      total: 'cart/cartTotal'
     }),
     /*     products() {
       return this.$store.getters.cartProducts
@@ -44,7 +44,9 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['checkout'])
+    ...mapActions({
+      checkout: 'cart/checkout'
+    })
   }
 }
 </script>

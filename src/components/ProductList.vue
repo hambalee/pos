@@ -41,7 +41,8 @@ export default {
     }),
     // ...mapGetters(['productIsInStock'])
     ...mapGetters({
-      productIsInStock: 'productIsInStock'
+      productIsInStock: 'products/productIsInStock'
+      //or ...mapGetters('products',{ productIsInStock: 'productIsInStock'
     })
   },
   /*     computed: {
@@ -57,7 +58,7 @@ export default {
   methods: {
     ...mapActions({
       //   fetchProduct: 'fetchProduct',
-      addProductToCart: 'addProductToCart'
+      addProductToCart: 'cart/addProductToCart'
     })
     /*     addProductToCart(product) {
       this.$store.dispatch('addProductToCart', product)
@@ -66,7 +67,7 @@ export default {
   created() {
     this.loading = true
     this.$store
-      .dispatch('fetchProducts')
+      .dispatch('products/fetchProducts')
       // this.fetchProduct()
       .then(() => (this.loading = false))
 
