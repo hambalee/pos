@@ -39,7 +39,8 @@ export default {
       return this.$store.getters.cartTotal
     } */
     ...mapState({
-      checkoutStatus: 'checkoutStatus'
+      // checkoutStatus: 'checkoutStatus'
+      checkoutStatus: state => state.cart.checkoutStatus
     })
   },
   methods: {

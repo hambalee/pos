@@ -2,7 +2,7 @@
   <div>
     <h1>Product List</h1>
     <img v-if="loading" src="../assets/loading.gif" />
-    <ul v-else>
+    <ul v-else-if="products">
       <li v-for="product in products" :key="product.productID">
         {{ product.productName }} ราคา
         {{ product.productPrice | currency }} (เหลือ
@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     ...mapState({
-      products: state => state.products
+      products: state => state.products.products
       //   firstProduct: state => state.products[0],
       /*     specificProduct (state){
         return state.products[this.productIndex]
@@ -56,18 +56,19 @@ export default {
   }, */
   methods: {
     ...mapActions({
-    //   fetchProduct: 'fetchProduct',
+      //   fetchProduct: 'fetchProduct',
       addProductToCart: 'addProductToCart'
-    }),
-/*     addProductToCart(product) {
+    })
+    /*     addProductToCart(product) {
       this.$store.dispatch('addProductToCart', product)
     } */
   },
   created() {
     this.loading = true
-    this.$store.dispatch('fetchProducts')
-    // this.fetchProduct()
-    .then(() => (this.loading = false))
+    this.$store
+      .dispatch('fetchProducts')
+      // this.fetchProduct()
+      .then(() => (this.loading = false))
 
     /*     shop.getProducts().then(products => {
     //   this.state.products = products
