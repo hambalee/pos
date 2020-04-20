@@ -22,35 +22,33 @@
     </v-simple-table>
     <v-card>
       <v-card-title primary-title>
-        <div>  ยอดรวม {{imports.importSum}} บาท</div>
+        <div v-if="imports">ยอดรวม {{ imports.importSum }} บาท</div>
       </v-card-title>
-<!--       <v-card-text>
+      <!--       <v-card-text>
         <div>รวมเป็นเงิน {{imports}}</div>
       </v-card-text> -->
-      
-      
     </v-card>
   </div>
 </template>
 
 <script>
 /* eslint-disable no-unused-vars */
-import { importsCollection } from "../firebase";
-import { importDetailsCollection } from "../firebase";
-import { productsCollection } from "../firebase";
-import { suppliersCollection } from "../firebase";
-import moment from "moment";
+import { importsCollection } from '../firebase'
+import { importDetailsCollection } from '../firebase'
+import { productsCollection } from '../firebase'
+import { suppliersCollection } from '../firebase'
+import moment from 'moment'
 export default {
-  name: "StockList",
+  name: 'StockList',
   created() {
-    this.initialize();
+    this.initialize()
   },
   data() {
     return {
       headers: [
-        { text: "productID", value: "productID" },
-        { text: "productName", value: "productName" },
-        { text: "importDetailCost", value: "importDetailCost" }
+        { text: 'productID', value: 'productID' },
+        { text: 'productName', value: 'productName' },
+        { text: 'importDetailCost', value: 'importDetailCost' }
       ],
       importID: this.$route.params.id,
       imports: [],
@@ -59,12 +57,12 @@ export default {
       suppliers: [],
       showProducts: [],
       showProducts_id: []
-    };
+    }
   },
   methods: {
     async initialize1() {
       // console.log(this.importID);
-      await this.getImport();
+      await this.getImport()
       // await console.log(this.idList);
       // this.idList.forEach( id => console.log(id))
 
@@ -109,17 +107,17 @@ export default {
         .doc(this.importID)
         .get()
         .then(q => {
-          this.imports = q.data();
-          return this.imports;
+          this.imports = q.data()
+          return this.imports
         })
         // .then(q => this.imports = q.data())
         .then(i => {
           //*console.log("i", i.imoprtDetailIDs);
-          let l = [];
+          let l = []
           l.push({
-            id: i.imoprtDetailIDs,
+            id: i.importDetailIDs || '',
             name: i.i
-          });
+          })
           //*console.log("l", l);
 
           // // console.log(this.imports)----****
@@ -165,62 +163,63 @@ export default {
                 console.log(tmp) */
           // })
           // })***
-        });
+        })
+        .cathch(() => console.log('ca'))
     },
     initialize2() {
       // get suppliers
       suppliersCollection
-        .orderBy("createdAt", "desc")
+        .orderBy('createdAt', 'desc')
         .get()
         .then(q => {
           this.suppliers = q.docs.map(doc => {
-            let tmp;
-            tmp = doc.data();
-            tmp.ID = doc.id;
-            return tmp;
-          });
-        });
+            let tmp
+            tmp = doc.data()
+            tmp.ID = doc.id
+            return tmp
+          })
+        })
       // get products
       productsCollection
-        .orderBy("quantityPerUnit", "asc")
+        .orderBy('quantityPerUnit', 'asc')
         .get()
         .then(q => {
           this.products = q.docs.map(doc => {
-            let tmp;
-            tmp = doc.data();
-            tmp.ID = doc.id;
-            return tmp;
-          });
-        });
+            let tmp
+            tmp = doc.data()
+            tmp.ID = doc.id
+            return tmp
+          })
+        })
       //get imports
       importsCollection
-        .orderBy("importNumber", "desc")
+        .orderBy('importNumber', 'desc')
         .get()
         .then(querySnapshot => {
           this.imports = querySnapshot.docs.map(doc => {
-            let tmpimport;
-            tmpimport = doc.data();
-            tmpimport.importID = doc.id;
+            let tmpimport
+            tmpimport = doc.data()
+            tmpimport.importID = doc.id
 
             this.suppliers.forEach(sup => {
               if (tmpimport.supplierID == sup.ID)
-                tmpimport.supplierName = sup.supplierName;
-            });
+                tmpimport.supplierName = sup.supplierName
+            })
             tmpimport.dispDate = moment(tmpimport.importDate.toDate())
-              .locale("th")
-              .format("LLLL");
-            return tmpimport;
-          });
-        });
+              .locale('th')
+              .format('LLLL')
+            return tmpimport
+          })
+        })
       //get imoprtDetails
       importDetailsCollection.get().then(querySnapshot => {
         this.importDetails = querySnapshot.docs.map(doc => {
-          let tmp;
-          tmp = doc.data();
-          tmp.id = doc.id;
-          return tmp;
-        });
-      });
+          let tmp
+          tmp = doc.data()
+          tmp.id = doc.id
+          return tmp
+        })
+      })
     },
     initialize() {
       importsCollection
@@ -229,11 +228,16 @@ export default {
         .then(querySnapshot => {
           //*console.log(querySnapshot.data());
           this.imports = querySnapshot.data()
-          let id = [];
-          querySnapshot.data().importDetailIDs.forEach(importid => {
-            id.push(importid);
-          });
-          return id;
+          let id = []
+          if (querySnapshot.exists) {
+            querySnapshot.data().importDetailIDs.forEach(importid => {
+              id.push(importid)
+            })
+          }
+          else {
+            this.$router.replace("/stock/import");
+          }
+          return id
         })
         .then(id => {
           id.forEach(id => {
@@ -241,13 +245,13 @@ export default {
               .doc(id)
               .get()
               .then(querySnapshot => {
-                this.showProducts.push(querySnapshot.data());
+                this.showProducts.push(querySnapshot.data())
                 // console.log(this.showProducts);
-              });
-          });
-        });
+              })
+          })
+        })
       // get detail
-/*       importsCollection.get().then(querySnapshot => {
+      /*       importsCollection.get().then(querySnapshot => {
         this.importDetails = querySnapshot.docs.map(doc => {
           let tmp;
           tmp = doc.data();
@@ -257,7 +261,7 @@ export default {
       }); */
     }
   }
-};
+}
 </script>
 
 <style></style>

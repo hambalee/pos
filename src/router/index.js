@@ -88,6 +88,7 @@ const routes = [
     name: 'stock-view',
     component: () => import('../views/StockView.vue'),
     meta: {
+      requiresAuth: true,
       title: 'รายละเอียด'
     }
   },
