@@ -49,10 +49,23 @@ export default {
           // incrementItemQuantity
           commit('incrementItemQuantity', cartItem)
         }
-        commit('products/decrementProductInventory', product, {root: true})
+        commit('products/decrementProductInventory', product, { root: true })
       } else {
         //show out of stock
       }
+    },
+    // eslint-disable-next-line no-unused-vars
+    deleteItemInCart({ state, commit }, product) {
+      /*       const cartItem = state.cart.find(
+        item => item.productID === product.productID
+      ) */
+      // const index = this.state.indexOf(product)
+      //* console.log(product);
+
+      // eslint-disable-next-line no-undef
+      commit('delete', product)
+
+      commit('products/resetProductInventory', product, { root: true })
     },
     checkout({ state, commit }) {
       shop.buyProducts(
@@ -74,6 +87,13 @@ export default {
         ...product,
         quantityPerUnit: 1
       })
+    },
+    // eslint-disable-next-line no-unused-vars
+    delete(state, product) {
+      const index = state.cart.findIndex(
+        item => item.productID == product.productID
+      )
+      state.cart.splice(index, 1)
     },
 
     incrementItemQuantity(state, cartItem) {

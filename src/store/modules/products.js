@@ -48,6 +48,15 @@ export default {
 
     decrementProductInventory(state, product) {
       product.quantityPerUnit--
-    }
+    },
+
+    resetProductInventory(state, product) {
+      state.products.map(p => {
+        if(p.productID === product.productID){
+          p.quantityPerUnit = p.inventory
+        }
+      })
+      
+    },
   }
 }
