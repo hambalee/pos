@@ -1,24 +1,50 @@
 <template>
   <div>
-    <h1>Product List</h1>
+    <!-- <h1 class="justify-center">Product List</h1> -->
     <img v-if="loading" src="../assets/loading.gif" />
-    <ul v-else-if="products">
-      <li v-for="product in products" :key="product.productID">
-        {{ product.productName }} ราคา
-        {{ product.productPrice | currency }} (เหลือ
-        {{ product.quantityPerUnit }} ชิ้น)
-        <br />
-        <v-btn
-          outlined
-          dark
-          class="primary"
-          :disabled="!productIsInStock(product)"
+    <v-row v-else-if="products">
+      <v-col
+        v-for="product in products"
+        :key="product.productID"
+        xl="3"
+        lg="3"
+        md="4"
+        sm="6"
+        xs="12"
+        cols="12"
+      >
+        <v-card
+          min-height="100%"
           @click="addProductToCart(product)"
+          :disabled="!productIsInStock(product)"
         >
-          Add to cart
-        </v-btn>
-      </li>
-    </ul>
+          <v-img
+            :src="product.productImageUrl"
+            aspect-ratio="2"
+            contain
+          ></v-img>
+          <v-card-title>{{ product.productPrice | currency }}</v-card-title>
+          <v-card-subtitle
+            >เหลือ {{ product.quantityPerUnit }} ชิ้น</v-card-subtitle
+          >
+          <v-card-text
+            ><b>{{ product.productName }}</b></v-card-text
+          >
+          <!--     <v-card-action>
+           <v-btn
+            
+              outlined
+              block
+              :disabled="!productIsInStock(product)"
+              
+              text
+            >
+              ซื้อ
+            </v-btn> 
+          </v-card-action>-->
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

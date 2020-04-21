@@ -181,10 +181,14 @@
       @onAddProduct="addProduct"
     />
     <Payment :products="cart"/> -->
-
-    <ProductList />
-    <hr />
-    <ShoppingCart />
+    <v-row>
+      <v-col cols="12" md="8" order-md="first">
+        <ProductList />
+      </v-col>
+      <v-col cols="12" md="4" order-sm="first">
+        <ShoppingCart />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
