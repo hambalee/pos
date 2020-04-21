@@ -20,6 +20,7 @@ export default {
             let newdoc
             newdoc = doc.data()
             newdoc.productID = doc.id
+            newdoc.inventory = newdoc.quantityPerUnit
 
             categoryList.forEach(cat => {
               if (newdoc.categoryID == cat.categoryID) {
