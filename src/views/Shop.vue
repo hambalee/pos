@@ -80,7 +80,7 @@
           </v-card>
         </v-col>
       </v-row> 
-      -->
+    -->
 
     <!--     </v-container> -->
 
@@ -122,7 +122,7 @@
           </v-col>
         </v-row>
       </v-container>
-    </div> -->
+    </div>-->
 
     <!-- card product list start -->
     <!--     <v-card class="mx-auto" max-width="200"  v-for="item in items" :key="item">
@@ -137,7 +137,7 @@
       <v-card-text>
         <div >Whitehaven Beach</div>
       </v-card-text>
-    </v-card> -->
+    </v-card>-->
     <!-- card product list end -->
     <!--     <v-row>
     <v-col cols="12" sm="6" offset-sm="3" >
@@ -173,20 +173,36 @@
         </v-container>
       </v-card>
     </v-col>
-  </v-row> -->
+    </v-row>-->
     <!--     <ProductItem
       v-for="product in products"
       :product="product"
       :key="product.productID"
       @onAddProduct="addProduct"
     />
-    <Payment :products="cart"/> -->
+    <Payment :products="cart"/>-->
     <v-row>
-      <v-col cols="12" md="8" order-md="first">
-        <ProductList />
-      </v-col>
-      <v-col cols="12" md="4" order-sm="first">
+      <v-col
+        cols="12"
+        md="4"
+        order-xl="last"
+        order-lg="last"
+        order-md="last"
+        order-sm="first"
+        order-xs="first"
+      >
         <ShoppingCart />
+      </v-col>
+      <v-col
+        cols="12"
+        md="8"
+        order-xl="first"
+        order-lg="first"
+        order-md="first"
+        order-sm="last"
+        order-xs="last"
+      >
+        <ProductList />
       </v-col>
     </v-row>
   </div>
