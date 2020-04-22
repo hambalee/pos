@@ -3,7 +3,9 @@ export default {
   namespaced: true,
   state: {
     //*product in shop
-    products: []
+    products: [],
+    filteredProducts: [],
+    message: ''
   },
   getters: {
     //*products
@@ -44,6 +46,7 @@ export default {
       // products is payload
       // update products
       state.products = products
+      state.filteredProducts = products
     },
 
     decrementProductInventory(state, product) {
@@ -52,11 +55,32 @@ export default {
 
     resetProductInventory(state, product) {
       state.products.map(p => {
-        if(p.productID === product.productID){
+        if (p.productID === product.productID) {
           p.quantityPerUnit = p.inventory
         }
       })
-      
+    },
+    setProductInventory(state, product) {
+      state.products.map(p => {
+        if (p.productID === product.productID) {
+          let tmp = p.inventory - product.quantityPerUnit
+          if (tmp >= 0) {
+            p.quantityPerUnit = tmp
+          } else {
+            p.quantityPerUnit = 0
+          }
+          console.log(p, 'adsfadsf')
+          // console.log(n);
+        }
+      })
+    },
+    updateMessage(state, message) {
+      state.message = message
+      state.filteredProducts = []
+      if(message != null)
+      state.filteredProducts = state.products.filter(product => product.productName.toLowerCase().includes(state.message.toLowerCase()))
+      else
+      state.filteredProducts = state.products
     },
   }
 }
