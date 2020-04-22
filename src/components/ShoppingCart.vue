@@ -19,8 +19,41 @@
               <h2>ชำระเงิน</h2>
             </v-btn>
           </v-card-actions>
+          <v-row outlined>
+            <v-col class="ml-5" cols="6">
+              <v-edit-dialog autofocus>
+                <v-card text flat dense>
+                  <v-btn outlined>
+                    <span class="warning--text">ลด {{ discount | currency }}</span>
+                  </v-btn>
+                  <span>
+                    <del class="ml-2" v-if="discount > 0">{{ total | currency }}</del>
+                  </span>
+                </v-card>
+                <template v-slot:input>
+                  <v-text-field
+                    v-model="discount"
+                    label="ส่วนลด"
+                    single-line
+                    autofocus
+                    type="number"
+                  ></v-text-field>
+                </template>
+              </v-edit-dialog>
+              <v-btn icon v-if="discount && discount > 0 " @click="$store.commit('cart/setDiscount', 0)">
+                <v-icon>cancel</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="5">
+              <h2 class="text-right">รวม {{ totalWithDiscount | currency }}</h2>
+            </v-col>
+          </v-row>
+
           <v-card-title>
-            <p>Total: {{ total | currency }}</p>
+            <v-col cols="7">
+              <h6></h6>
+            </v-col>
+            <v-col cols="5"></v-col>
           </v-card-title>
         </v-card>
         <v-card outlined>
@@ -35,11 +68,7 @@
                 <v-col cols="4" justify-center align-center>
                   {{ product.productPrice | currency }}
                   <br />
-                  <v-edit-dialog
-                    large
-                    persistent
-                    @save="setQuantity(product)"
-                  >
+                  <v-edit-dialog large persistent @save="setQuantity(product)">
                     <div>x {{ product.quantityPerUnit }}</div>
                     <template v-slot:input>
                       <v-text-field
@@ -79,13 +108,22 @@ export default {
   name: 'ShoppingCart',
   data() {
     return {
-      dialog: false,
+      dialog: false
     }
   },
   computed: {
+    discount: {
+      get() {
+        return this.$store.state.cart.discount
+      },
+      set(discount) {
+        this.$store.commit('cart/setDiscount', discount)
+      }
+    },
     ...mapGetters({
       products: 'cart/cartProducts',
-      total: 'cart/cartTotal'
+      total: 'cart/cartTotal',
+      totalWithDiscount: 'cart/totalWithDiscount'
     }),
     /*     products() {
       return this.$store.getters.cartProducts

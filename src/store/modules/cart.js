@@ -3,7 +3,8 @@ export default {
   namespaced: true,
   state: {
     cart: [],
-    checkoutStatus: null
+    checkoutStatus: null,
+    discount: 0
   },
   getters: {
     //*get product from cart
@@ -33,6 +34,21 @@ export default {
           total + product.productPrice * product.quantityPerUnit,
         0
       )
+    },
+    totalWithDiscount(state, getters) {
+      if (getters.cartTotal == 0) {
+        return 0
+      }
+      return (
+        getters.cartProducts.reduce(
+          (total, product) =>
+            total + product.productPrice * product.quantityPerUnit,
+          0
+        ) - getters.discount
+      )
+    },
+    discount(state) {
+      return state.discount
     }
   },
   actions: {
@@ -119,6 +135,10 @@ export default {
           p.quantityPerUnit = product.quantityPerUnit
         }
       })
+    },
+
+    setDiscount(state, discount) {
+      state.discount = discount
     }
   }
 }
