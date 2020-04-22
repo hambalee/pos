@@ -78,6 +78,12 @@ export default {
           commit('setCheckoutStatus', 'fail')
         }
       )
+    },
+    // eslint-disable-next-line no-unused-vars
+    setQuantity({ commit }, product) {
+      product.quantityPerUnit = Number(product.quantityPerUnit)
+      commit('products/setProductInventory', product, { root: true })
+      commit('setQuntityInCart', product)
     }
   },
   mutations: {
@@ -105,6 +111,14 @@ export default {
 
     emptyCart(state) {
       state.cart = []
+    },
+
+    setQuntityInCart(state, product) {
+      state.cart.map(p => {
+        if (p.productID === product.productID) {
+          p.quantityPerUnit = product.quantityPerUnit
+        }
+      })
     }
   }
 }
