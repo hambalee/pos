@@ -1,4 +1,9 @@
-import { productsCollection, categoriesCollection } from '../firebase'
+import {
+  productsCollection,
+  categoriesCollection,
+  ordersCollection,
+  orderDetailsCollection
+} from '../firebase'
 
 export default {
   getProducts() {
@@ -37,9 +42,76 @@ export default {
     // return products
   },
 
-  buyProducts(products, cb, errorCb) {
-    console.log('buy product : ', products)
-    errorCb()
-    cb()
+  buyProducts(products, orderData, cb, errorCb) {
+    let ordersCollectionID
+    ordersCollection
+      .add({
+        ...orderData
+      })
+      .then(docRef => {
+        //*console.log('docRef.id sss of ordersCollectionID', docRef.id)
+        ordersCollectionID = docRef.id
+        //*console.log('ordersCollectionID sss expected string id : ', ordersCollectionID)
+        //*return docRef.id
+      })
+      // .then(id => {
+      .then(() => {
+        //*console.log('id issss same id : ', id)
+        let orderDetailsID = []
+        products.map(product => {
+          //*console.log('ok product.quantityPerUnit ss', product.quantityPerUnit)
+          //*console.log('ok product.inventory ss', product.inventory)
+          //check qty and update product in stock
+          let newqty = 0
+          if (product.quantityPerUnit <= product.inventory) {
+            newqty = product.inventory - product.quantityPerUnit
+          }
+          productsCollection
+            .doc(product.productID)
+            .update({
+              quantityPerUnit: newqty
+            })
+            .then(() => {
+              orderDetailsCollection
+                .add({ ...product })
+                .then(docRef => {
+                  //*console.log('ok docRef id isssyifff ', docRef.id)
+                  //*console.log('ok orderDetailsID beforepush : ', orderDetailsID)
+                  orderDetailsID.push(docRef.id)
+                  //*console.log('orderDetailsID afterpush : ', orderDetailsID)
+                  ordersCollection
+                    .doc(ordersCollectionID)
+                    .update({ orderDetailID: orderDetailsID })
+                })
+                .then(() => {
+                  //*console.log('orderDetailsID in then : ', orderDetailsID)
+                  cb()
+                })
+                .catch(() => {
+                  errorCb()
+                })
+              // console.log('* late : ', orderDetailsID)
+            })
+          /*             .then(() => {
+              console.log(
+                '* late orderDetailsID afterthen of update product in stock : ',
+                orderDetailsID
+              )
+            }) */
+        }) /* 
+        console.log('//orderDetailsID iss expected array : ', orderDetailsID)
+        return orderDetailsID */
+      })
+    /*       .then(orderDetailsID => {
+        console.log(
+          '//orderDetailsID iss same expected array : ',
+          orderDetailsID
+        )
+      }) */
+    //log
+    //*console.log('//products : ', products)
+    //*console.log('//orderData : ', orderData)
+    //*errorCb()
+    //*cb()
   }
 }

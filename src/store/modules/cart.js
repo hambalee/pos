@@ -83,12 +83,25 @@ export default {
 
       commit('products/resetProductInventory', product, { root: true })
     },
-    checkout({ state, commit }) {
+    checkout({ state, commit, getters,rootState }) {
+      let orderData = {}
+      orderData.orderDiscount = Number(getters.discount)
+      orderData.orderDate = new Date()
+      orderData.orderPrice = getters.totalWithDiscount
+      orderData.orderPriceIfNoDiscount = getters.cartTotal
+      orderData.customerID = ''
+      orderData.orderDetailID = []
+      orderData.employeeID = ''
+      orderData.orderStatus = ''
+
       shop.buyProducts(
         state.cart,
+        orderData,
         () => {
           commit('emptyCart')
           commit('setCheckoutStatus', 'success')
+          commit('products/updateProductAfterPayment', rootState.products.products, { root: true })
+          // commit('products/updateProductAfterPayment', { root: true })
         },
         () => {
           commit('setCheckoutStatus', 'fail')
@@ -116,6 +129,7 @@ export default {
         item => item.productID == product.productID
       )
       state.cart.splice(index, 1)
+      state.checkoutStatus = ''
     },
 
     incrementItemQuantity(state, cartItem) {

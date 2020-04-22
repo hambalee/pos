@@ -59,6 +59,7 @@ export default {
           p.quantityPerUnit = p.inventory
         }
       })
+      state.filteredProducts = state.products
     },
     setProductInventory(state, product) {
       state.products.map(p => {
@@ -77,10 +78,31 @@ export default {
     updateMessage(state, message) {
       state.message = message
       state.filteredProducts = []
-      if(message != null)
-      state.filteredProducts = state.products.filter(product => product.productName.toLowerCase().includes(state.message.toLowerCase()))
-      else
-      state.filteredProducts = state.products
+      if (message != null)
+        state.filteredProducts = state.products.filter(product =>
+          product.productName
+            .toLowerCase()
+            .includes(state.message.toLowerCase())
+        )
+      else state.filteredProducts = state.products
     },
+    updateProductAfterPayment(state, products) {
+      //* console.log('ok state iss:',state);
+      //* console.log('ok products iss:',products);
+      products.forEach(product => {
+        //* console.log('pr ;:', product.quantityPerUnit, "---", product.inventory)
+        product.inventory = product.quantityPerUnit
+        //* console.log("hhh");
+
+        //* console.log('pr ;:', product.quantityPerUnit, "---", product.inventory)
+      })
+
+      /*       state.products.map(p => {
+        console.log(p.inventory);
+        
+        p.inventory = state.product.quantityPerUnit
+      })
+      state.filteredProducts = state.products */
+    }
   }
 }

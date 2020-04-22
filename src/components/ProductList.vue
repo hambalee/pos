@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- <h1 class="justify-center">Product List</h1> -->
-    <v-col cols="12">
+    <v-col cols="12" dense>
       <!-- <v-text-field label="ค้นหา" clearable :value="search" @input="updateSearch"></v-text-field> -->
-      <v-text-field label="ค้นหา" clearable v-model="message"></v-text-field>
+      <v-text-field label="ค้นหา" clearable v-model="message" dense></v-text-field>
     </v-col>
     <img v-if="loading" src="../assets/loading.gif" />
     <v-row v-else-if="products">
