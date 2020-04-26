@@ -44,9 +44,24 @@ export default {
 
   buyProducts(products, orderData, cb, errorCb) {
     let ordersCollectionID
+    let recieptNumber = 1
+    ordersCollection
+      .orderBy('recieptNumber', 'desc')
+      .limit(1)
+      .get()
+      .then(q => {
+        //TODO FP-61
+        recieptNumber = q.docs[0].data().recieptNumber + 1
+      })
+    /*       // eslint-disable-next-line no-unused-vars
+      .catch(err => {
+        //*console.log(err);
+      }) */
+    .then(() => {
     ordersCollection
       .add({
-        ...orderData
+        ...orderData,
+        recieptNumber: recieptNumber
       })
       .then(docRef => {
         //*console.log('docRef.id sss of ordersCollectionID', docRef.id)
@@ -102,6 +117,7 @@ export default {
         console.log('//orderDetailsID iss expected array : ', orderDetailsID)
         return orderDetailsID */
       })
+    })
     /*       .then(orderDetailsID => {
         console.log(
           '//orderDetailsID iss same expected array : ',
