@@ -57,6 +57,15 @@ const routes = [
       title: 'ประวัติ'
     }
   },
+  {
+    path: '/transaction/details/:id',
+    name: 'transaction-detail',
+    component: () => import('../views/TransactionDetails.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'รายละเอียดการสั่งซื้อ'
+    }
+  },
   // {
   //   path: "/about",
   //   name: "about",
