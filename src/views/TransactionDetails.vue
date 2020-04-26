@@ -20,11 +20,13 @@
         </tbody>
       </template>
     </v-simple-table>
-    <v-card>
+    <v-card outlined>
       <v-card-title primary-title>
         <div v-if="orderDetailID">ยอดรวม {{sum}}</div>
       </v-card-title>
     </v-card>
+    <!-- // TODO: FP-29 <div class="pt-4"><v-btn color="success" >แก้ไข</v-btn></div> -->
+    
   </div>
 </template>
 
@@ -52,7 +54,7 @@ export default {
         .then(() => {
           this.orderDetailID.forEach(id => {
             orderDetailsCollection.doc(id).get().then(doc => {
-              this.productDetails.push(doc.data())
+              this.productDetails.push({...doc.data(),id: id})
             })
           })
         })
