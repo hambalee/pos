@@ -137,6 +137,7 @@ export default {
     },
     setCheckoutStatus(state, status) {
       state.checkoutStatus = status
+      setTimeout(function(){ state.checkoutStatus = ''; }, 5000);
     },
 
     emptyCart(state) {
