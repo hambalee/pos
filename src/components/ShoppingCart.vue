@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-card outlined>
-          <v-card @click="$store.commit('cart/setCheckoutStatus', 'fail')">
+          <v-card @click="$store.commit('cart/setCheckoutStatus', '')">
             <v-alert
               type="success"
               v-if="checkoutStatus && total == 0 && checkoutStatus == 'success'"
@@ -11,17 +11,23 @@
             >ทำรายการขายสำเร็จ</v-alert>
             <v-alert
               type="error"
-              v-else-if="checkoutStatus && total == 0 && checkoutStatus == ''"
+              v-else-if="checkoutStatus && total == 0 && checkoutStatus == 'fail'"
             >ทำรายการขายไม่สำเร็จ</v-alert>
           </v-card>
           <v-card-actions>
-            <v-btn @click="checkout" :disabled="total == 0" block color="success" outlined>
+            <v-btn
+              @click.stop="dialog = true"
+              :disabled="total == 0"
+              block
+              color="success"
+              outlined
+            >
               <h2>ชำระเงิน</h2>
             </v-btn>
           </v-card-actions>
           <v-row outlined>
             <v-col class="ml-5" cols="6">
-              <v-edit-dialog autofocus>
+              <v-edit-dialog>
                 <v-card text flat dense>
                   <v-btn outlined>
                     <span class="warning--text">ลด {{ discount | currency }}</span>
@@ -35,12 +41,16 @@
                     v-model="discount"
                     label="ส่วนลด"
                     single-line
-                    autofocus
                     type="number"
+                    @focus="$event.target.select()"
                   ></v-text-field>
                 </template>
               </v-edit-dialog>
-              <v-btn icon v-if="discount && discount > 0 " @click="$store.commit('cart/setDiscount', 0)">
+              <v-btn
+                icon
+                v-if="discount && discount > 0 "
+                @click="$store.commit('cart/setDiscount', 0)"
+              >
                 <v-icon>cancel</v-icon>
               </v-btn>
             </v-col>
@@ -73,10 +83,10 @@
                     <template v-slot:input>
                       <v-text-field
                         v-model="product.quantityPerUnit"
-                        label="Edit"
+                        label="จำนวน"
                         single-line
-                        autofocus
                         type="number"
+                        @focus="$event.target.select()"
                       ></v-text-field>
                     </template>
                   </v-edit-dialog>
@@ -99,6 +109,55 @@
     <!--     <v-btn @click="$store.dispatch('checkout')" v-if="total != 0"
       >Checkout</v-btn
     >-->
+
+    <v-row justify="center">
+      <v-dialog v-model="dialog" max-width="290">
+        <v-card>
+          <v-card-title class="headline">ชำระเงิน</v-card-title>
+
+          <v-card-text>
+            ยอดรวม
+            <b>{{ totalWithDiscount | currency }}</b>
+            <v-text-field
+              name="name"
+              label="จ่ายเงิน"
+              id="id"
+              v-model="money"
+              v-if="dialog"
+              @focus="$event.target.select()"
+              clearable
+            ></v-text-field>
+            <v-row>
+              <v-col cols="3">
+                <v-btn color="info" text @click="money = totalWithDiscount">เต็ม</v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn color="info" text @click="money += 1000">1000</v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn color="info" text @click="money += 500">500</v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn color="info" text @click="money += 100">100</v-btn>
+              </v-col>
+            </v-row>
+
+            <h2 v-if="money > 0">ทอน {{money - totalWithDiscount | currency}}</h2>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="success"
+              block
+              @click="btnCheckout"
+              :disabled="money == 0 || money == null"
+            >ตกลง</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </div>
 </template>
 
@@ -108,7 +167,9 @@ export default {
   name: 'ShoppingCart',
   data() {
     return {
-      dialog: false
+      dialog: false,
+      modalCheckout: false,
+      money: 0
     }
   },
   computed: {
@@ -141,7 +202,12 @@ export default {
       checkout: 'cart/checkout',
       deleteItem: 'cart/deleteItemInCart',
       setQuantity: 'cart/setQuantity'
-    })
+    }),
+    btnCheckout() {
+      this.$store.dispatch('cart/checkout')
+      this.dialog = false
+      this.money = 0
+    }
   }
 }
 </script>
