@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'ReportIncomeExpense',
   data() {
@@ -29,9 +29,6 @@ export default {
       this.$store.dispatch('report/fetchOrdersIncomeExpense');
   },
   computed: {
-      ...mapState({
-          ordersIncomeExpense: state => state.report.ordersIncomeExpense
-      }),
       ...mapGetters({
       getOrdersIncomeExpense: 'report/getOrdersIncomeExpense'
     }),
