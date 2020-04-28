@@ -16,6 +16,7 @@ export default {
         newdoc.dateDate = newdoc.date.getUTCDate()
         newdoc.showDate = newdoc.date.toLocaleString('th-TH').substr(0,9)
         newdoc.showTime = newdoc.date.toLocaleString('th-TH').substr(10)
+        newdoc.hour = newdoc.date.getHours()
         return newdoc
       })
       return orders
