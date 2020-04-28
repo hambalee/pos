@@ -1,4 +1,4 @@
-import { ordersCollection } from '../firebase'
+import { ordersCollection, orderDetailsCollection } from '../firebase'
 
 export default {
   getOrders() {
@@ -19,6 +19,19 @@ export default {
         return newdoc
       })
       return orders
+    })
+  },
+  getOrderDetails() {
+    var orderDetails = []
+    return orderDetailsCollection.get().then(querySnapshot => {
+      orderDetails = querySnapshot.docs.map(doc => {
+        let newdoc
+        newdoc = doc.data()
+        newdoc.id = doc.id
+        newdoc.profit = newdoc.productPrice - newdoc.productCost
+        return newdoc
+      })
+      return orderDetails
     })
   }
 }
