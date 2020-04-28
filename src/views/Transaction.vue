@@ -29,6 +29,7 @@ export default {
       },
       { text: 'วันที่', value: 'orderDate' },
       { text: 'จำนวนเงิน', value: 'orderPrice' },
+      { text: 'จำนวนรายการ', value: 'orderDetailID.length' },
       { text: '', value: 'action', sortable: false }
     ],
     orders: []
