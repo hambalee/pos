@@ -22,7 +22,11 @@
     </v-simple-table>
     <v-card outlined>
       <v-card-title primary-title>
-        <div v-if="orderDetailID">ยอดรวม {{sum}}</div>
+        <div v-if="orderDetailID">รวม {{sum | currency}}</div>
+        <v-spacer></v-spacer>
+        <div v-if="orderDetailID">ส่วนลด {{discount | currency}}</div>
+        <v-spacer></v-spacer>
+        <div v-if="orderDetailID">ยอดเงินสุทธิ {{sum-discount | currency}}</div>
       </v-card-title>
     </v-card>
     <!-- // TODO: FP-29 <div class="pt-4"><v-btn color="success" >แก้ไข</v-btn></div> -->
@@ -40,7 +44,8 @@ export default {
   data() {
     return {
       productDetails: [],
-      orderDetailID: []
+      orderDetailID: [],
+      discount: 0
     }
   },
   methods: {
@@ -50,6 +55,7 @@ export default {
         .get()
         .then(querySnapshot => {
           this.orderDetailID = querySnapshot.data().orderDetailID
+          this.discount = querySnapshot.data().orderDiscount
         })
         .then(() => {
           this.orderDetailID.forEach(id => {
