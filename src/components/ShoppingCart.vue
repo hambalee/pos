@@ -152,7 +152,7 @@
               color="success"
               block
               @click="btnCheckout"
-              :disabled="money == 0 || money == null"
+              :disabled="money == 0 || money == null || (money - totalWithDiscount) < 0"
             >ตกลง</v-btn>
           </v-card-actions>
         </v-card>
@@ -207,6 +207,7 @@ export default {
       this.$store.dispatch('cart/checkout')
       this.dialog = false
       this.money = 0
+      this.$store.commit('cart/setDiscount', 0)
     }
   }
 }
