@@ -1,92 +1,120 @@
 <template>
   <div id="report">
-    <h1>Report</h1>
-    <v-form>
-      <label>
-        New Product:
-        <v-text-field v-model="productName" type="text">ชื่อ</v-text-field>
-        <v-text-field v-model="productPrice" type="number">ราคา</v-text-field>
-        <v-text-field v-model="productQuantity" type="number"
-          >ปริมาณ</v-text-field
-        >
-        <button type="submit" @click.prevent="addProduct()">Add</button>
-      </label>
-    </v-form>
-    <v-label
-      v-for="product in products"
-      :key="product"
-      no-action
-    >
-      {{ product.name }}
-    </v-label>
-    <v-file-input multiple label="File input" v-model="files"></v-file-input>
-    <v-btn color="success" @click="upload">text</v-btn>
+    <!-- 4 card -->
+    <v-row>
+      <v-col lg="3" md="6" sm="12" cols="12">
+        <ReportCard title="กำไร" :subtitle="orderProfit" />
+      </v-col>
+      <v-col lg="3" md="6" sm="12" cols="12">
+        <ReportCard title="ยอดขาย" :subtitle="orderSales" />
+      </v-col>
+      <v-col lg="3" md="6" sm="12" cols="12">
+        <ReportCard title="ต้นทุน" :subtitle="orderCost" />
+      </v-col>
+      <v-col lg="3" md="6" sm="12" cols="12">
+        <ReportCard title="ส่วนลด" :subtitle="orderDiscount" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-tabs vertical>
+          <v-tab>
+            <v-icon left>show_chart</v-icon>กราฟ
+          </v-tab>
+          <v-tab>
+            <v-icon left>thumb_up_alt</v-icon>ขายดี
+          </v-tab>
+          <v-tab>
+            <v-icon left>report</v-icon>ใกล้หมด
+          </v-tab>
+          <v-tab>
+            <v-icon left>account_balance_wallet</v-icon>ยอดขาย
+          </v-tab>
+          <v-tab>
+            <v-icon left>category</v-icon>หมวดหมู่
+          </v-tab>
+          <v-tab-item>
+            <v-card flat>
+                <ReportChart />
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+            <v-card flat>
+              <v-card-text>
+                <ReportBestSeller />
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+            <ReportMinimum />
+          </v-tab-item>
+          <v-tab-item>
+            <ReportIncomeExpense />
+          </v-tab-item>
+        </v-tabs>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
-import { productsCollection } from "../firebase";
-import { storageRef } from "../firebase";
-// import axios from "axios";
+// import { productsCollection } from '../firebase'
+import ReportCard from '@/components/report/ReportCard'
+import ReportChart from '@/components/report/ReportChart'
+import ReportBestSeller from '@/components/report/ReportBestSeller'
+import ReportMinimum from '@/components/report/ReportMinimum'
+import ReportIncomeExpense from '@/components/report/ReportIncomeExpense'
+// eslint-disable-next-line no-unused-vars
+import { mapState } from 'vuex'
 
 export default {
-  name: "Report",
-  data() {
-    return {
-      products: [],
-      productName: "",
-      productPrice: "",
-      productQuantity: "",
-      files: null
-    };
+  name: 'Report',
+  components: {
+    ReportCard,
+    ReportChart,
+    ReportBestSeller,
+    ReportMinimum,
+    ReportIncomeExpense
   },
   created() {
-    productsCollection.get().then(querySnapshot => {
-      this.products = querySnapshot.docs.map(doc => doc.data());
-    });
+    this.$store.dispatch('report/fetchOrders')
   },
-  methods: {
-    upload() {
-      // console.log(this.files);
-      // console.log(this.files[0].name);
-      const fd = new FormData();
-      fd.append("image", this.files[0], this.files[0].name);
-      // console.log(fd);
-
-      /* axios.post(storage, fd)
-      .then(res => {
-        console.log(res);
-
-      }) */
-      // eslint-disable-next-line no-unused-vars
-      storageRef.ref(`${this.files[0].name}`).put(fd).then(function(snapshot) {
-        //console.log("Uploaded a blob or file!");
-        //*console.log(snapshot);
-
-      });
+  computed: {
+    ...mapState({
+      orders: state => state.report.orders,
+      todayOrders: state => state.report.todayOrders
+    }),
+    orderSales() {
+      return this.todayOrders.reduce(
+        (total, order) => total + order.orderPrice,
+        0
+      )
     },
-    addProduct() {
-      productsCollection
-        .add({
-          name: this.productName,
-          price: this.productPrice,
-          quantity: this.productQuantity,
-          createdAt: new Date()
-        })
-        // eslint-disable-next-line no-unused-vars
-        .then(function(docRef) {
-          //*console.log("Document written with ID: ", docRef.id);
-        })
-        // eslint-disable-next-line no-unused-vars
-        .catch(function(error) {
-          //*console.error("Error adding document: ", error);
-        });
-      this.productName = "";
-      this.productPrice = "";
-      this.productQuantity = "";
+    orderProfit() {
+      return this.todayOrders.reduce(
+        (total, order) => total + order.orderProfit,
+        0
+      )
+    },
+    orderDiscount() {
+      return this.todayOrders.reduce(
+        (total, order) => total + order.orderDiscount,
+        0
+      )
+    },
+    orderCost() {
+      return this.todayOrders.reduce((total, order) => {
+        if (order.orderCost) {
+          return total + order.orderCost
+        }else{
+          return total + 0
+        }
+      }, 0)
     }
-  }
-};
+  },
+  methods: {}
+}
 </script>
 
 <style></style>
