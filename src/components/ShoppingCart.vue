@@ -140,8 +140,9 @@
                   </v-card-text>
                 </v-card>
               </v-dialog>
-            </v-input>ยอดรวม
-            <b>{{ totalWithDiscount | currency }}</b>
+            </v-input>
+            <h2>ยอดรวม
+            <b>{{ totalWithDiscount | currency }}</b></h2>
             <v-text-field
               name="name"
               label="จ่ายเงิน"
