@@ -35,6 +35,13 @@ export default {
         0
       )
     },
+    cartCost(state, getters) {
+      return getters.cartProducts.reduce(
+        (total, product) =>
+          total + product.productCost * product.quantityPerUnit,
+        0
+      )
+    },
     totalWithDiscount(state, getters) {
       if (getters.cartTotal == 0) {
         return 0
@@ -89,6 +96,8 @@ export default {
       orderData.orderDate = new Date()
       orderData.orderPrice = getters.totalWithDiscount
       orderData.orderPriceIfNoDiscount = getters.cartTotal
+      orderData.orderCost = getters.cartCost
+      orderData.orderProfit = getters.totalWithDiscount - getters.cartCost
       orderData.customerID = ''
       orderData.orderDetailID = []
       orderData.employeeID = ''
