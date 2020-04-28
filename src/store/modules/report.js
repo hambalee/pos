@@ -45,6 +45,24 @@ export default {
         if (!found) betSeller.push({ ...detail })
       })
       return betSeller
+    },
+    getBestSellerCategory(state) {
+      let betSeller = []
+      state.orderDetails.forEach(detail => {
+        let found = false
+        betSeller.forEach(bs => {
+          if (bs.categoryID === detail.categoryID) {
+            //check same product
+            found = true
+            bs.productPrice += detail.productPrice
+            bs.productCost += detail.productCost
+            bs.quantityPerUnit += detail.quantityPerUnit
+            bs.profit += detail.profit
+          }
+        })
+        if (!found) betSeller.push({ ...detail })
+      })
+      return betSeller
     }
   },
   actions: {

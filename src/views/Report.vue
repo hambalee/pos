@@ -52,6 +52,9 @@
           <v-tab-item>
             <ReportIncomeExpense />
           </v-tab-item>
+          <v-tab-item>
+            <ReportCategory />
+          </v-tab-item>
         </v-tabs>
       </v-col>
     </v-row>
@@ -65,6 +68,7 @@ import ReportChart from '@/components/report/ReportChart'
 import ReportBestSeller from '@/components/report/ReportBestSeller'
 import ReportMinimum from '@/components/report/ReportMinimum'
 import ReportIncomeExpense from '@/components/report/ReportIncomeExpense'
+import ReportCategory from '@/components/report/ReportCategory'
 // eslint-disable-next-line no-unused-vars
 import { mapState } from 'vuex'
 
@@ -75,7 +79,8 @@ export default {
     ReportChart,
     ReportBestSeller,
     ReportMinimum,
-    ReportIncomeExpense
+    ReportIncomeExpense,
+    ReportCategory
   },
   created() {
     this.$store.dispatch('report/fetchOrders')
