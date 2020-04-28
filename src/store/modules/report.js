@@ -56,30 +56,30 @@ export default {
     ],
     testmonthSeries: [
       {
-        name: 'Series 1',
+        name: 'ยอดขาย',
         data: [
           {
-            x: '1',
+            x: '2020-04-04',
             y: 34
           },
           {
-            x: '2',
+            x: '2020-04-06',
             y: 43
           },
           {
-            x: '3',
+            x: '2020-04-08',
             y: 31
           },
           {
-            x: '4',
+            x: '2020-04-09',
             y: 43
           },
           {
-            x: '5',
+            x: '2020-04-14',
             y: 33
           },
           {
-            x: '6',
+            x: '2020-04-28',
             y: 52
           }
         ]
@@ -119,7 +119,9 @@ export default {
     daySeries: [],
     monthSeries: [],
     yearSeries: [],
-    dayDatePickISO: new Date().toISOString().substr(0,10)
+    dayDatePickISO: new Date().toISOString().substr(0, 10),
+    monthDatePickISO: new Date().toISOString().substr(0, 7),
+    yearDatePickISO: new Date().toISOString().substr(0, 4)
   },
   getters: {
     getOrdersIncomeExpense(state) {
@@ -176,6 +178,15 @@ export default {
         if (!found) betSeller.push({ ...detail })
       })
       return betSeller
+    },
+    getdaySeries(state) {
+      return state.daySeries
+    },
+    getmonthSeries(state) {
+      return state.monthSeries
+    },
+    getyearSeries(state) {
+      return state.yearSeries
     }
   },
   actions: {
@@ -197,11 +208,52 @@ export default {
           resolve()
         })
       })
+    },
+    fetchOrdersForDay({ commit }) {
+      return new Promise(resolve => {
+        report.getOrders().then(orders => {
+          commit('setOrdersForDay', orders)
+          resolve()
+        })
+      })
+    },
+    fetchOrdersForMonth({ commit }) {
+      return new Promise(resolve => {
+        report.getOrders().then(orders => {
+          commit('setOrdersForMonth', orders)
+          resolve()
+        })
+      })
+    },
+    fetchOrdersForYear({ commit }) {
+      return new Promise(resolve => {
+        report.getOrders().then(orders => {
+          commit('setOrdersForYear', orders)
+          resolve()
+        })
+      })
     }
   },
   mutations: {
     setOrders(state, orders) {
       state.orders = orders
+    },
+    setOrdersIncomeExpense(state, ordersIncomeExpense) {
+      state.ordersIncomeExpense = ordersIncomeExpense
+    },
+    setOrderDetails(state, orders) {
+      state.orderDetails = orders
+    },
+    setdayDatePickISO(state, date) {
+      state.dayDatePickISO = date
+    },
+    setmonthDatePickISO(state, date) {
+      state.monthDatePickISO = date
+    },
+    setyearDatePickISO(state, date) {
+      state.yearDatePickISO = date
+    },
+    setOrdersForDay(state, orders) {
       state.todayOrders = orders.filter(
         order => order.dateISO === new Date().toISOString().substr(0, 10)
       )
@@ -235,7 +287,7 @@ export default {
         if (order.dateISO === state.dayDatePickISO) {
           hour.forEach(h => {
             if (h.x === order.hour) {
-              h.y += order.orderPrice
+              h.y += order.orderPriceIfNoDiscount
             }
           })
         }
@@ -243,14 +295,51 @@ export default {
 
       state.daySeries = [{ name: 'ยอดขาย', data: [...hour] }]
     },
-    setOrdersIncomeExpense(state, ordersIncomeExpense) {
-      state.ordersIncomeExpense = ordersIncomeExpense
+    setOrdersForMonth(state) {
+      let month = []
+      state.orders.forEach(order => {
+        if (order.dateISO.substr(0, 7) === state.monthDatePickISO) {
+          // only selected month
+          //check same date
+          let found = false
+          month.forEach(m => {
+            if (m.x === order.dateISO) {
+              found = true
+            }
+            if (found) {
+              m.y += order.orderPriceIfNoDiscount
+            }
+          })
+          if (!found) {
+            month.push({ x: order.dateISO, y: order.orderPriceIfNoDiscount })
+          }
+          // let found = false
+          // month.forEach(m => {
+          //   console.log(m);
+          //   if (m.dateISO === order.dateISO) {
+          //     found = true
+          //     m.y += order.orderPrice
+          //   }
+          // })
+          // if (!found) month.push({ x: order.dateISO, y: 100 })
+        }
+      })
+      // console.log(month)
+      state.monthSeries = [{ name: 'ยอดขาย', data: [...month] }]
+      // console.log(state.monthSeries);
     },
-    setOrderDetails(state, orders) {
-      state.orderDetails = orders
-    },
-    setdayDatePickISO(state, date) {
-      state.dayDatePickISO = date
+    setOrdersForYear(state) {
+      let data = [0,0,0,0,0,0,0,0,0,0,0,0,]
+      state.orders.forEach(order => {
+        if(order.dateYear == state.yearDatePickISO){
+          for (let i = 0; i < 12; i++) {
+            if(order.dateMonth === i)
+            data[i] = data[i] + order.orderPriceIfNoDiscount
+          }
+        }
+      })
+
+      state.yearSeries = [{ name: 'ยอดขาย', data: [...data] }]
     }
   }
 }
