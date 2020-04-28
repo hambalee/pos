@@ -109,14 +109,38 @@
     <!--     <v-btn @click="$store.dispatch('checkout')" v-if="total != 0"
       >Checkout</v-btn
     >-->
-
+    <!-- //*dialog checkout -->
     <v-row justify="center">
       <v-dialog v-model="dialog" max-width="290">
         <v-card>
           <v-card-title class="headline">ชำระเงิน</v-card-title>
 
           <v-card-text>
-            ยอดรวม
+            <v-input>
+              <v-select
+                :items="customerList"
+                label="เลือกลูกค้า"
+                item-text="customerName"
+                item-value="id"
+                clearable
+                v-model="selectedCustomer"
+                @change="actionCustomerID(selectedCustomer)"
+              ></v-select>
+              <v-btn color="info" text right @click="dialog2 = true">เพิ่ม</v-btn>
+              <v-dialog v-model="dialog2" max-width="290">
+                <v-card>
+                  <v-card-title primary-title>เพิ่มลูกค้า</v-card-title>
+                  <v-card-text>
+                    <v-text-field label="ชื่อ" v-model="customerName"></v-text-field>
+                    <v-text-field label="เบอร์โทร" v-model="customerPhone"></v-text-field>
+                    <v-text-field label="ที่อยู่" v-model="customerAddress"></v-text-field>
+                    <v-text-field label="อีเมล์" v-model="customerEmail"></v-text-field>
+                    <v-btn color="info" @click="addCustomer">เพิ่ม</v-btn>
+                    <v-btn color="info" @click="clearBtn" text>ยกเลิก</v-btn>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+            </v-input>ยอดรวม
             <b>{{ totalWithDiscount | currency }}</b>
             <v-text-field
               name="name"
@@ -163,13 +187,21 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import { customersCollection } from '../firebase'
 export default {
   name: 'ShoppingCart',
   data() {
     return {
       dialog: false,
+      dialog2: false,
       modalCheckout: false,
-      money: 0
+      money: 0,
+      customerList: [],
+      selectedCustomer: '',
+      customerName: '',
+      customerPhone: '',
+      customerAddress: '',
+      customerEmail: ''
     }
   },
   computed: {
@@ -201,14 +233,47 @@ export default {
     ...mapActions({
       checkout: 'cart/checkout',
       deleteItem: 'cart/deleteItemInCart',
-      setQuantity: 'cart/setQuantity'
+      setQuantity: 'cart/setQuantity',
+      actionCustomerID: 'cart/actionCustomerID'
     }),
     btnCheckout() {
       this.$store.dispatch('cart/checkout')
       this.dialog = false
       this.money = 0
       this.$store.commit('cart/setDiscount', 0)
+    },
+    initCustomer() {
+      customersCollection.get().then(q => {
+        this.customerList = q.docs.map(doc => {
+          return { ...doc.data(), id: doc.id }
+        })
+      })
+    },
+    addCustomer() {
+      customersCollection
+        .add({
+          customerName: this.customerName,
+          customerPhone: this.customerPhone,
+          customerEmail: this.customerEmail,
+          customerAddress: this.customerAddress,
+          createdAt: new Date()
+        })
+        .then(() => {
+          this.initCustomer()
+          this.clearBtn()
+        })
+    },
+    clearBtn() {
+      this.selectedCustomer = ''
+      this.customerName = ''
+      this.customerPhone = ''
+      this.customerAddress = ''
+      this.customerEmail = ''
+      this.dialog2 = false
     }
+  },
+  created() {
+    this.initCustomer()
   }
 }
 </script>

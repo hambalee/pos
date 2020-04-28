@@ -4,7 +4,8 @@ export default {
   state: {
     cart: [],
     checkoutStatus: null,
-    discount: 0
+    discount: 0,
+    customerID: ''
   },
   getters: {
     //*get product from cart
@@ -56,6 +57,9 @@ export default {
     },
     discount(state) {
       return state.discount
+    },
+    getCustomerID(state){
+      return state.customerID ? state.customerID : null
     }
   },
   actions: {
@@ -98,7 +102,7 @@ export default {
       orderData.orderPriceIfNoDiscount = getters.cartTotal
       orderData.orderCost = getters.cartCost
       orderData.orderProfit = getters.totalWithDiscount - getters.cartCost
-      orderData.customerID = ''
+      orderData.customerID = getters.getCustomerID
       orderData.orderDetailID = []
       orderData.employeeID = ''
       orderData.orderStatus = ''
@@ -122,6 +126,9 @@ export default {
       product.quantityPerUnit = Number(product.quantityPerUnit)
       commit('products/setProductInventory', product, { root: true })
       commit('setQuntityInCart', product)
+    },
+    actionCustomerID({commit}, id){
+      commit('setCustomerID', id)
     }
   },
   mutations: {
@@ -163,6 +170,9 @@ export default {
 
     setDiscount(state, discount) {
       state.discount = discount
+    },
+    setCustomerID(state, id) {
+      state.customerID = id
     }
   }
 }
