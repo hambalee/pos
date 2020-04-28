@@ -333,7 +333,7 @@ export default {
       state.orders.forEach(order => {
         if(order.dateYear == state.yearDatePickISO){
           for (let i = 0; i < 12; i++) {
-            if(order.dateMonth === i)
+            if(order.dateMonth-1 === i)
             data[i] = data[i] + order.orderPriceIfNoDiscount
           }
         }
