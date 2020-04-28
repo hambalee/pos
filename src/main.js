@@ -7,6 +7,10 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import './firebase.js'
 import { firestorePlugin } from 'vuefire'
 import { currency } from './currency'
+import VueApexCharts from 'vue-apexcharts'
+
+Vue.use(VueApexCharts)
+Vue.component('apexchart', VueApexCharts)
 
 Vue.filter('currency', currency)
 
