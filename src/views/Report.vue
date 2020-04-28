@@ -87,7 +87,7 @@ export default {
     }),
     orderSales() {
       return this.todayOrders.reduce(
-        (total, order) => total + order.orderPrice,
+        (total, order) => total + order.orderPriceIfNoDiscount,
         0
       )
     },
