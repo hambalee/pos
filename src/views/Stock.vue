@@ -20,6 +20,7 @@
             label="Search"
             single-line
             hide-details
+            clearable
           ></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialogAddProdcut">
@@ -70,12 +71,11 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-          </v-toolbar> -->
+            </v-toolbar>-->
 
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">
-                <v-icon>add</v-icon>
-                เพิ่มสินค้า
+                <v-icon>add</v-icon>เพิ่มสินค้า
               </v-btn>
             </template>
             <v-card>
@@ -87,34 +87,23 @@
                 <v-container>
                   <v-row @keypress.enter="save">
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.productName"
-                        label="ชื่อสินค้า"
-                      ></v-text-field>
+                      <v-text-field v-model="editedItem.productName" label="ชื่อสินค้า"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.productDetail"
-                        label="รายละเอียด"
-                      ></v-text-field>
+                      <v-text-field v-model="editedItem.productDetail" label="รายละเอียด"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field v-model="editedItem.productPrice" label="ราคาขาย"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.productPrice"
-                        label="ราคาขาย"
-                      ></v-text-field>
+                      <v-text-field v-model="editedItem.productCost" label="ราคาต้นทุน"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.productCost"
-                        label="ราคาต้นทุน"
-                      ></v-text-field>
+                      <v-text-field v-model="editedItem.quantityPerUnit" label="ปริมาณ"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.quantityPerUnit"
-                        label="ปริมาณ"
-                      ></v-text-field>
+                      <v-text-field v-model="editedItem.stockMinimum" label="จำนวนสินค้าขั้นต่ำ"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
@@ -135,7 +124,7 @@
                         filled
                         @change="onFilePicked"
                       ></v-file-input>
-                        <!-- v-model="editedItem.imageUrl" -->
+                      <!-- v-model="editedItem.imageUrl" -->
                       <!-- <input type="file" @change="previewImage" accept="image/*" > -->
                     </v-col>
                   </v-row>
@@ -153,12 +142,8 @@
         </v-toolbar>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
-          edit
-        </v-icon>
-        <v-icon small @click="deleteItem(item)">
-          delete
-        </v-icon>
+        <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
+        <v-icon small @click="deleteItem(item)">delete</v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -221,6 +206,7 @@ export default {
       categoryName: '',
       productCost: '',
       productDetail: '',
+      stockMinimum: '',
       imageUrl: ''
       /*       category: {
         id: "",
@@ -237,6 +223,7 @@ export default {
       categoryName: '',
       productCost: '',
       productDetail: '',
+      stockMinimum: '',
       imageUrl: ''
       /*       category: {
         id: "",
