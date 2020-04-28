@@ -5,7 +5,8 @@ export default {
     //*product in shop
     products: [],
     filteredProducts: [],
-    message: ''
+    message: '',
+    minimumProducts: []
   },
   getters: {
     //*products
@@ -21,7 +22,7 @@ export default {
       return product => {
         return product.quantityPerUnit > 0
       }
-    }
+    },
   },
   actions: {
     //*products
@@ -47,6 +48,7 @@ export default {
       // update products
       state.products = products
       state.filteredProducts = products
+      state.minimumProducts = products.filter(product => product.quantityPerUnit < product.stockMinimum)
     },
 
     decrementProductInventory(state, product) {

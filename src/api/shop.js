@@ -26,6 +26,7 @@ export default {
             newdoc = doc.data()
             newdoc.productID = doc.id
             newdoc.inventory = newdoc.quantityPerUnit
+            newdoc.ratio = newdoc.quantityPerUnit/newdoc.stockMinimum
 
             categoryList.forEach(cat => {
               if (newdoc.categoryID == cat.categoryID) {
