@@ -202,7 +202,10 @@ export default {
             });
             tmpimport.dispDate = moment(tmpimport.importDate.toDate())
               .locale("th")
-              .format("LLLL");
+              .format('L')
+            + ' ' + moment(tmpimport.importDate.toDate())
+              .locale('th')
+              .format('LTS')
             return tmpimport;
           });
         });
