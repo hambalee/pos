@@ -51,7 +51,10 @@ export default {
             tmp.id = doc.id
             tmp.orderDate = moment(tmp.orderDate.toDate())
               .locale('th')
-              .format('LLLL')
+              .format('L')
+            + ' ' + moment(tmp.orderDate.toDate())
+              .locale('th')
+              .format('LTS')
             return tmp
           })
         })

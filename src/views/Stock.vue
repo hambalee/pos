@@ -181,7 +181,12 @@ export default {
     search: '',
     dialogAddProdcut: false,
     headers: [
-      { text: 'รูป', align: 'center', value: 'productImageUrl' },
+      {
+        text: 'รูป',
+        align: 'center',
+        value: 'productImageUrl',
+        sortable: false
+      },
       {
         text: 'ชื่อสินค้า',
         align: 'left',
@@ -192,7 +197,12 @@ export default {
       { text: 'ราคาต้นทุนเฉลี่ย', align: 'center', value: 'productCost' },
       { text: 'ปริมาณ', align: 'center', value: 'quantityPerUnit' },
       { text: 'หมวดหมู่', align: 'left', value: 'categoryName' },
-      { text: 'แก้ไขล่าสุด', align: 'center', value: 'lastEdit' },
+      {
+        text: 'แก้ไขล่าสุด',
+        align: 'center',
+        value: 'lastEdit',
+        sortable: false
+      },
       { text: 'วันที่', align: ' d-none', value: 'editedAt' },
       { text: '', value: 'action', sortable: false }
     ],
@@ -446,9 +456,11 @@ export default {
               }
             })
             // newdoc.editedAt = `${newdoc.editedAt}`
-            newdoc.lastEdit = moment(newdoc.editedAt.toDate())
+            newdoc.lastEdit = moment(newdoc.editedAt.toDate()).locale('th').format('L') + ' ' + moment(newdoc.editedAt.toDate()).locale('th').format('LTS')
+            // newdoc.lastEdit = newdoc.editedAt.toDate()
+            /* newdoc.lastEdit = moment(newdoc.editedAt.toDate())
               .locale('th')
-              .format('LLLL')
+              .format('LLLL') */
             return newdoc
           })
         })
