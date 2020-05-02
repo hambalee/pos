@@ -22,7 +22,7 @@ export default {
       return product => {
         return product.quantityPerUnit > 0
       }
-    },
+    }
   },
   actions: {
     //*products
@@ -48,7 +48,9 @@ export default {
       // update products
       state.products = products
       state.filteredProducts = products
-      state.minimumProducts = products.filter(product => product.quantityPerUnit < product.stockMinimum)
+      state.minimumProducts = products.filter(
+        product => product.quantityPerUnit <= product.stockMinimum
+      )
     },
 
     decrementProductInventory(state, product) {
@@ -64,16 +66,9 @@ export default {
       state.filteredProducts = state.products
     },
     setProductInventory(state, product) {
-      state.products.map(p => {
+      state.products.forEach(p => {
         if (p.productID === product.productID) {
-          let tmp = p.inventory - product.quantityPerUnit
-          if (tmp >= 0) {
-            p.quantityPerUnit = tmp
-          } else {
-            p.quantityPerUnit = 0
-          }
-          console.log(p, 'adsfadsf')
-          // console.log(n);
+          p.quantityPerUnit = p.inventory - product.quantityPerUnit
         }
       })
     },

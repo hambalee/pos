@@ -216,7 +216,7 @@ export default {
       categoryName: '',
       productCost: '',
       productDetail: '',
-      stockMinimum: '',
+      stockMinimum: 0,
       imageUrl: ''
       /*       category: {
         id: "",
@@ -233,7 +233,7 @@ export default {
       categoryName: '',
       productCost: '',
       productDetail: '',
-      stockMinimum: '',
+      stockMinimum: 0,
       imageUrl: ''
       /*       category: {
         id: "",
@@ -306,6 +306,7 @@ export default {
           editedAt: new Date(),
           productCost: parseFloat(this.editedItem.productCost),
           productDetail: this.editedItem.productDetail,
+          stockMinimum: this.editedItem.stockMinimum,
           productImageUrl: this.imageUrl
         })
         // eslint-disable-next-line no-unused-vars
@@ -363,6 +364,7 @@ export default {
           editedAt: new Date(),
           productCost: parseFloat(this.editedItem.productCost),
           productDetail: this.editedItem.productDetail,
+          stockMinimum: this.editedItem.stockMinimum,
           productImageUrl: this.imageUrl
         })
         .then(() => {
