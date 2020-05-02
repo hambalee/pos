@@ -58,7 +58,7 @@ export default {
     discount(state) {
       return state.discount
     },
-    getCustomerID(state){
+    getCustomerID(state) {
       return state.customerID ? state.customerID : null
     }
   },
@@ -94,7 +94,7 @@ export default {
 
       commit('products/resetProductInventory', product, { root: true })
     },
-    checkout({ state, commit, getters,rootState }) {
+    checkout({ state, commit, getters, rootState }) {
       let orderData = {}
       orderData.orderDiscount = Number(getters.discount)
       orderData.orderDate = new Date()
@@ -113,7 +113,11 @@ export default {
         () => {
           commit('emptyCart')
           commit('setCheckoutStatus', 'success')
-          commit('products/updateProductAfterPayment', rootState.products.products, { root: true })
+          commit(
+            'products/updateProductAfterPayment',
+            rootState.products.products,
+            { root: true }
+          )
           // commit('products/updateProductAfterPayment', { root: true })
         },
         () => {
@@ -124,10 +128,14 @@ export default {
     // eslint-disable-next-line no-unused-vars
     setQuantity({ commit }, product) {
       product.quantityPerUnit = Number(product.quantityPerUnit)
-      commit('products/setProductInventory', product, { root: true })
+      if (product.quantityPerUnit > product.inventory) {
+        commit('setCheckoutStatus', 'over')
+        product.quantityPerUnit = product.inventory
+      }
       commit('setQuntityInCart', product)
+      commit('products/setProductInventory', product, { root: true })
     },
-    actionCustomerID({commit}, id){
+    actionCustomerID({ commit }, id) {
       commit('setCustomerID', id)
     }
   },
@@ -153,7 +161,9 @@ export default {
     },
     setCheckoutStatus(state, status) {
       state.checkoutStatus = status
-      setTimeout(function(){ state.checkoutStatus = ''; }, 5000);
+      setTimeout(function() {
+        state.checkoutStatus = ''
+      }, 5000)
     },
 
     emptyCart(state) {
@@ -161,7 +171,7 @@ export default {
     },
 
     setQuntityInCart(state, product) {
-      state.cart.map(p => {
+      state.cart.forEach(p => {
         if (p.productID === product.productID) {
           p.quantityPerUnit = product.quantityPerUnit
         }

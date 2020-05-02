@@ -13,6 +13,10 @@
               type="error"
               v-else-if="checkoutStatus && total == 0 && checkoutStatus == 'fail'"
             >ทำรายการขายไม่สำเร็จ</v-alert>
+            <v-alert
+              type="error"
+              v-else-if="checkoutStatus && checkoutStatus == 'over'"
+            >สินค้าไม่เพียงพอ</v-alert>
           </v-card>
           <v-card-actions>
             <v-btn
