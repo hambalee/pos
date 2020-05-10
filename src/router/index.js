@@ -154,6 +154,15 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title
+  // //* check login and auth
+  // const currentUser = firebase.auth().currentUser;
+  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  // if (requiresAuth && !currentUser) next('login');
+  // else if (!requiresAuth && currentUser) next('home');
+  // else next();
+
+
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       // console.log("User is logined from router");
